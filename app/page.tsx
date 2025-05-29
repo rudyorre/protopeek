@@ -1,50 +1,59 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Download, FileUp, AlertCircle } from "lucide-react"
+import { Download, AlertCircle, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ProtoVisualizer } from "./components/proto-visualizer"
 import { ProtoByteTable } from "./components/proto-byte-table"
 import { Header } from "./components/header"
-import { getSampleData } from "./utils/sample-data"
+import { ProtoFileSelector } from "./components/proto-file-selector"
+import { MessageTypeSelector } from "./components/message-type-selector"
+import { ProtobufDecoder, parseProtobufInput } from "./utils/protobuf-decoder"
 
-export default function ProtobufDecoder() {
+export default function Home() {
   const [protobufBytes, setProtobufBytes] = useState("")
-  const [protoFile, setProtoFile] = useState<File | null>(null)
   const [decodedData, setDecodedData] = useState<string | null>(null)
-  const [protoStructure, setProtoStructure] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isDecoding, setIsDecoding] = useState(false)
+  const [protoFiles, setProtoFiles] = useState<Array<{ name: string; content: string; path: string }>>([])
+  const [availableMessageTypes, setAvailableMessageTypes] = useState<string[]>([])
+  const [selectedMessageType, setSelectedMessageType] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    setProtoFile(file)
+  const decoderRef = useRef<ProtobufDecoder>(new ProtobufDecoder())
+
+  const handleProtoFilesSelected = async (files: Array<{ name: string; content: string; path: string }>) => {
+    setProtoFiles(files)
     setError(null)
+    setInfo(null)
+    setAvailableMessageTypes([])
+    setSelectedMessageType(null)
 
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setProtoStructure(event.target.result as string)
+    if (files.length > 0) {
+      try {
+        await decoderRef.current.loadProtoFiles(files)
+        const messageTypes = decoderRef.current.getAvailableMessageTypes()
+        setAvailableMessageTypes(messageTypes)
+
+        if (messageTypes.length > 0) {
+          setSelectedMessageType(messageTypes[0])
+          setInfo(`Loaded ${files.length} proto file(s) with ${messageTypes.length} message type(s)`)
         }
+      } catch (err: any) {
+        setError(`Failed to load proto files: ${err.message}`)
       }
-      reader.readAsText(file)
-    } else {
-      setProtoStructure(null)
     }
   }
 
-  const handleDecode = () => {
+  const handleDecode = async () => {
     setError(null)
+    setInfo(null)
     setIsDecoding(true)
 
     // Validation
@@ -54,27 +63,38 @@ export default function ProtobufDecoder() {
       return
     }
 
-    // In a real implementation, we would use a protobuf library to decode the data
-    setTimeout(() => {
-      try {
-        // Get sample data based on input text
-        const sampleType = getSampleType(protobufBytes.trim().toLowerCase())
-        const mockDecodedData = getSampleData(sampleType, protoFile !== null)
+    try {
+      // Parse the input bytes
+      const bytes = parseProtobufInput(protobufBytes.trim())
+      console.log(
+        "Parsed bytes:",
+        Array.from(bytes)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join(" "),
+      )
 
-        setDecodedData(JSON.stringify(mockDecodedData, null, 2))
-        setIsDecoding(false)
-      } catch (err) {
-        setError("Failed to decode protobuf data. Please check your inputs and try again.")
-        setIsDecoding(false)
+      let decodedResult
+
+      if (protoFiles.length > 0 && selectedMessageType) {
+        // Decode with schema
+        console.log("Decoding with schema using message type:", selectedMessageType)
+        decodedResult = await decoderRef.current.decodeWithSchema(bytes, selectedMessageType)
+        setInfo(`Successfully decoded using message type: ${selectedMessageType}`)
+      } else {
+        // Decode without schema
+        console.log("Decoding without schema")
+        decodedResult = await decoderRef.current.decodeWithoutSchema(bytes)
+        setInfo("Successfully decoded without schema (field names are numbers)")
       }
-    }, 1000)
-  }
 
-  // Determine which sample data to use based on input text
-  const getSampleType = (input: string): "simple" | "repeated" | "complex" => {
-    if (input.includes("simple")) return "simple"
-    if (input.includes("repeated")) return "repeated"
-    return "complex" // default
+      console.log("Decoded result:", decodedResult)
+      setDecodedData(JSON.stringify(decodedResult, null, 2))
+    } catch (err: any) {
+      console.error("Decoding error:", err)
+      setError(`Failed to decode protobuf data: ${err.message}`)
+    } finally {
+      setIsDecoding(false)
+    }
   }
 
   const handleDownload = () => {
@@ -91,6 +111,17 @@ export default function ProtobufDecoder() {
     URL.revokeObjectURL(url)
   }
 
+  const loadSampleData = (type: "simple" | "repeated" | "complex") => {
+    const samples = {
+      simple: "0a0a4a6f686e20446f6512d2091a106a6f686e406578616d706c652e636f6d",
+      repeated:
+        "0a0a4d79205461677312094a6f686e20446f651a0a696d706f7274616e741a04776f726b1a08706572736f6e616c1a06757267656e741a09666f6c6c6f772d7570",
+      complex:
+        "0a2e0a084a6f686e20446f6510d20912106a6f686e406578616d706c652e636f6d1a0a0a08353535343332311001220a0a08353535313233341000",
+    }
+    setProtobufBytes(samples[type])
+  }
+
   return (
     <>
       <Header />
@@ -104,9 +135,32 @@ export default function ProtobufDecoder() {
           <CardHeader>
             <CardTitle className="text-xl font-medium">Input Data</CardTitle>
             <CardDescription>
-              Paste your protobuf bytes to decode the data
-              <div className="mt-1 text-xs text-gray-400">
-                Try typing "simple", "repeated", or "complex" to see different sample outputs
+              Paste your protobuf bytes to decode the data (hex, base64, or comma-separated bytes)
+              <div className="mt-2 flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => loadSampleData("simple")}
+                  className="text-xs border-gray-600 hover:border-blue-500"
+                >
+                  Load Simple Sample
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => loadSampleData("repeated")}
+                  className="text-xs border-gray-600 hover:border-blue-500"
+                >
+                  Load Repeated Sample
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => loadSampleData("complex")}
+                  className="text-xs border-gray-600 hover:border-blue-500"
+                >
+                  Load Complex Sample
+                </Button>
               </div>
             </CardDescription>
           </CardHeader>
@@ -117,35 +171,29 @@ export default function ProtobufDecoder() {
               </Label>
               <Textarea
                 id="protobufBytes"
-                placeholder="Paste your protobuf bytes here..."
+                placeholder="Paste your protobuf bytes here (hex: 0a0b48656c6c6f20576f726c64, base64: CgtIZWxsbyBXb3JsZA==, or bytes: 10,11,72,101,108,108,111,32,87,111,114,108,100)"
                 className="min-h-[120px] font-mono text-sm bg-[#303134] border-gray-700 focus:border-blue-500 focus:ring-blue-500"
                 value={protobufBytes}
                 onChange={(e) => setProtobufBytes(e.target.value)}
               />
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="protoFile" className="text-sm font-medium">
-                  Proto File
-                </Label>
-                <span className="text-xs text-gray-400">(Optional)</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Input id="protoFile" type="file" accept=".proto" onChange={handleFileChange} className="hidden" />
-                <Button
-                  variant="outline"
-                  onClick={() => document.getElementById("protoFile")?.click()}
-                  className="w-full h-24 border-dashed border-gray-700 hover:border-blue-500 bg-[#303134] hover:bg-[#303134] flex flex-col gap-2"
-                >
-                  <FileUp className="h-6 w-6 text-blue-500" />
-                  <span>{protoFile ? protoFile.name : "Upload a .proto file (optional)"}</span>
-                </Button>
-              </div>
-              <p className="text-xs text-gray-400">
-                Without a .proto file, field names will be replaced with field numbers
-              </p>
-            </div>
+            <ProtoFileSelector onFilesSelected={handleProtoFilesSelected} selectedFiles={protoFiles} />
+
+            {availableMessageTypes.length > 0 && (
+              <MessageTypeSelector
+                messageTypes={availableMessageTypes}
+                selectedType={selectedMessageType}
+                onTypeSelected={setSelectedMessageType}
+              />
+            )}
+
+            {info && (
+              <Alert className="bg-blue-900/30 border-blue-800 text-blue-200">
+                <Info className="h-4 w-4" />
+                <AlertDescription>{info}</AlertDescription>
+              </Alert>
+            )}
 
             {error && (
               <Alert variant="destructive" className="bg-red-900/30 border-red-800 text-red-200">
@@ -195,7 +243,7 @@ export default function ProtobufDecoder() {
                   >
                     Byte Table
                   </TabsTrigger>
-                  {protoStructure && (
+                  {protoFiles.length > 0 && (
                     <TabsTrigger
                       value="structure"
                       className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
@@ -218,9 +266,16 @@ export default function ProtobufDecoder() {
                     <ProtoByteTable data={decodedData} />
                   </div>
                 </TabsContent>
-                {protoStructure && (
+                {protoFiles.length > 0 && (
                   <TabsContent value="structure">
-                    <pre className={cn("bg-[#303134] p-4 rounded-md", "text-sm font-mono")}>{protoStructure}</pre>
+                    <div className="space-y-4">
+                      {protoFiles.map((file, index) => (
+                        <div key={file.path}>
+                          <h3 className="text-lg font-medium mb-2 text-white">{file.path}</h3>
+                          <pre className={cn("bg-[#303134] p-4 rounded-md", "text-sm font-mono")}>{file.content}</pre>
+                        </div>
+                      ))}
+                    </div>
                   </TabsContent>
                 )}
                 <TabsContent value="raw">
