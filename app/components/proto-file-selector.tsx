@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileUp, Folder, X, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { FileViewerModal } from "./file-viewer-modal"
 
 interface ProtoFile {
   name: string
@@ -31,6 +32,7 @@ interface ProtoFileSelectorProps {
 
 export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileSelectorProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isViewerModalOpen, setIsViewerModalOpen] = useState(false)
   const [isLoadingDirectory, setIsLoadingDirectory] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -192,23 +194,31 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
         
       {/* </Dialog> */}
 
+      {/* Show a more compact indicator of selected files directly on the button instead of below */}
+      {selectedFiles.length === 0 && (
+        <p className="text-xs text-gray-400 mt-1">Without proto files, field names will be replaced with field numbers</p>
+      )}
+      
       {selectedFiles.length > 0 && (
-        <div className="mt-1 max-h-[60px] overflow-y-auto">
-          <div className="text-xs text-gray-400 mb-1 pl-1">Selected files:</div>
-          <div className="space-y-1">
-            {selectedFiles.map((file) => (
-              <div key={file.path} className="flex items-center justify-between bg-[#3a3a3a] px-2 py-1 rounded text-xs">
-                <span className="text-gray-300 font-mono truncate max-w-[200px]">{file.path}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeFile(file.path)}
-                  className="h-5 w-5 p-0 text-gray-400 hover:text-red-400 ml-1"
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
+        <div className="mt-2">
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-gray-400">Selected files ({selectedFiles.length}):</div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setIsViewerModalOpen(true)}
+              className="text-xs text-blue-400 hover:text-blue-300 h-5 p-0"
+            >
+              View all
+            </Button>
+          </div>
+          
+          {/* Show first file with ellipsis if there are more */}
+          <div className="bg-[#3a3a3a] px-2 py-1 mt-1 rounded text-xs flex items-center justify-between">
+            <span className="text-gray-300 font-mono truncate max-w-[200px]">
+              {selectedFiles[0].path}
+              {selectedFiles.length > 1 ? ` + ${selectedFiles.length - 1} more...` : ''}
+            </span>
           </div>
         </div>
       )}
@@ -286,7 +296,13 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
         </DialogContent>
       </Dialog>
 
-      <p className="text-xs text-gray-400">Without proto files, field names will be replaced with field numbers</p>
+      {/* File Viewer Modal */}
+      <FileViewerModal 
+        files={selectedFiles}
+        isOpen={isViewerModalOpen}
+        onOpenChange={setIsViewerModalOpen}
+        onRemoveFile={removeFile}
+      />
     </div>
   )
 }

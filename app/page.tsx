@@ -168,28 +168,32 @@ export default function Home() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Left column: Protobuf Bytes */}
-              <div className="space-y-2">
-                <Label htmlFor="protobufBytes" className="text-sm font-medium">
-                  Protobuf Bytes
-                </Label>
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="protobufBytes" className="text-sm font-medium">
+                      Protobuf Bytes
+                    </Label>
+                  </div>
+                </div>
                 <Textarea
                   id="protobufBytes"
                   placeholder="Paste your protobuf bytes here (hex: 0a0b48656c6c6f20576f726c64, base64: CgtIZWxsbyBXb3JsZA==, or bytes: 10,11,72...)"
-                  className="min-h-[100px] font-mono text-sm bg-[#303134] border-gray-700 focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-2 min-h-[85px] h-[85px] font-mono text-sm bg-[#303134] border-gray-700 focus:border-blue-500 focus:ring-blue-500"
                   value={protobufBytes}
                   onChange={(e) => setProtobufBytes(e.target.value)}
                 />
-                <p className="text-xs text-gray-400">Enter hex, base64, or comma-separated bytes</p>
+                <p className="text-xs text-gray-400 mt-1">Enter hex, base64, or comma-separated bytes</p>
               </div>
               
               {/* Right column: Proto File Selection */}
-              <div className="space-y-2">
+              <div>
                 <div className="flex-1">
                   <ProtoFileSelector onFilesSelected={handleProtoFilesSelected} selectedFiles={protoFiles} />
                 </div>
                 
                 {availableMessageTypes.length > 0 && (
-                  <div className="mt-3">
+                  <div className="mt-2">
                     <MessageTypeSelector
                       messageTypes={availableMessageTypes}
                       selectedType={selectedMessageType}
