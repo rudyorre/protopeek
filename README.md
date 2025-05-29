@@ -1,30 +1,108 @@
-# Protobuf decoder website
+# Protocol Buffers Decoder
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A modern, web-based tool for decoding and visualizing Protocol Buffers (protobuf) data. Built with Next.js, React, and TypeScript, this application provides an intuitive interface for exploring protobuf messages with or without schema files.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/rudyorres-projects/v0-protobuf-decoder-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/oqPmGCZh2h8)
+## Features
 
-## Overview
+- **Multi-format Visualization**: View decoded protobuf data in multiple formats
+  - **Tree View**: Hierarchical visualization of message structure
+  - **Byte Table**: Detailed byte-level breakdown with field mappings
+  - **Raw JSON**: Standard JSON output for easy copying
+  - **Proto Structure**: Schema visualization when .proto files are provided
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+- **Flexible Input Options**: 
+  - Paste protobuf bytes directly
+  - Optional .proto schema file upload for enhanced field naming
 
-## Deployment
+- **Modern UI/UX**:
+  - Dark theme optimized for developers
+  - Responsive design for all screen sizes
+  - Interactive collapsible tree structures
+  - Color-coded field types for better readability
 
-Your project is live at:
+- **Export Functionality**: Download decoded data as JSON files
 
-**[https://vercel.com/rudyorres-projects/v0-protobuf-decoder-website](https://vercel.com/rudyorres-projects/v0-protobuf-decoder-website)**
+## Getting Started
 
-## Build your app
+### Prerequisites
 
-Continue building your app on:
+- Node.js 18+
 
-**[https://v0.dev/chat/projects/oqPmGCZh2h8](https://v0.dev/chat/projects/oqPmGCZh2h8)**
+### Installation
 
-## How It Works
+1. Clone the repository:
+```bash
+git clone https://github.com/rudyorre/protobuf-decoder.git
+cd protobuf-decoder
+```
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+### Building for Production
+
+```bash
+npm build
+npm start
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 15.2.4
+- **Frontend**: React 19 with TypeScript
+- **Styling**: Tailwind CSS with custom dark theme
+- **UI Components**: Radix UI primitives with custom styling
+- **Icons**: Lucide React
+- **Development**: TypeScript, ESLint
+
+## 📁 Project Structure
+
+```
+protobuf-decoder/
+├── app/                    # Next.js app directory
+│   ├── components/         # React components
+│   │   ├── header.tsx      # Navigation header
+│   │   ├── footer.tsx      # Footer component
+│   │   ├── proto-visualizer.tsx    # Tree view component
+│   │   └── proto-byte-table.tsx    # Byte table component
+│   ├── utils/              # Utility functions
+│   │   └── sample-data.ts  # Sample protobuf data
+│   ├── layout.tsx          # Root layout
+│   └── page.tsx           # Main application page
+├── components/ui/          # Reusable UI components (Radix-based)
+├── lib/                   # Utility libraries
+└── public/               # Static assets
+```
+
+## Usage
+
+1. **Input Protobuf Data**: Paste your protobuf bytes in the text area
+2. **Upload Schema (Optional)**: Upload a `.proto` file for better field naming and structure visualization
+3. **Decode**: Click the "Decode Protobuf" button to process your data
+4. **Explore**: Switch between different visualization modes using the tabs:
+   - **Tree View**: Navigate through the message hierarchy
+   - **Byte Table**: Examine byte-level details and field mappings
+   - **Proto Structure**: View the schema structure (when available)
+   - **Raw JSON**: Copy the decoded JSON data
+5. **Export**: Download the decoded data as a JSON file
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
