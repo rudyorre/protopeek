@@ -158,39 +158,18 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Proto Files</Label>
           <span className="text-xs text-gray-400">(Optional)</span>
         </div>
         {selectedFiles.length > 0 && (
-          <Button variant="ghost" size="sm" onClick={clearAllFiles} className="text-gray-400 hover:text-red-400">
+          <Button variant="ghost" size="sm" onClick={clearAllFiles} className="text-gray-400 hover:text-red-400 h-6 px-2 py-0">
             Clear All
           </Button>
         )}
       </div>
-
-      {selectedFiles.length > 0 && (
-        <div className="space-y-2">
-          <div className="text-sm text-gray-300">Selected files ({selectedFiles.length}):</div>
-          <div className="space-y-1 max-h-32 overflow-y-auto">
-            {selectedFiles.map((file) => (
-              <div key={file.path} className="flex items-center justify-between bg-[#3a3a3a] px-3 py-2 rounded text-sm">
-                <span className="text-gray-300 font-mono">{file.path}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeFile(file.path)}
-                  className="h-6 w-6 p-0 text-gray-400 hover:text-red-400"
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild>
@@ -200,16 +179,39 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
               console.log("Button clicked, opening modal")
               setIsModalOpen(true)
             }}
-            className="w-full h-24 border-dashed border-gray-700 hover:border-blue-500 bg-[#303134] hover:bg-[#303134] flex flex-col gap-2"
+            className="w-full h-[85px] border-dashed border-gray-700 hover:border-blue-500 bg-[#303134] hover:bg-[#303134] flex flex-col gap-1"
           >
-            <FileUp className="h-6 w-6 text-blue-500" />
-            <span>
+            <FileUp className="h-5 w-5 text-blue-500" />
+            <span className="text-sm">
               {selectedFiles.length > 0
                 ? `${selectedFiles.length} file(s) selected - Click to change`
                 : "Select .proto files"}
             </span>
           </Button>
         </DialogTrigger>
+        
+      {/* </Dialog> */}
+
+      {selectedFiles.length > 0 && (
+        <div className="mt-1 max-h-[60px] overflow-y-auto">
+          <div className="text-xs text-gray-400 mb-1 pl-1">Selected files:</div>
+          <div className="space-y-1">
+            {selectedFiles.map((file) => (
+              <div key={file.path} className="flex items-center justify-between bg-[#3a3a3a] px-2 py-1 rounded text-xs">
+                <span className="text-gray-300 font-mono truncate max-w-[200px]">{file.path}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeFile(file.path)}
+                  className="h-5 w-5 p-0 text-gray-400 hover:text-red-400 ml-1"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
         <DialogContent className="sm:max-w-md bg-[#202124] border-gray-800">
           <DialogHeader>

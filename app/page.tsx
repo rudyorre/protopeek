@@ -136,69 +136,81 @@ export default function Home() {
             <CardTitle className="text-xl font-medium">Input Data</CardTitle>
             <CardDescription>
               Paste your protobuf bytes to decode the data (hex, base64, or comma-separated bytes)
-              <div className="mt-2 flex gap-2">
+              <div className="mt-2 flex flex-wrap gap-1">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => loadSampleData("simple")}
-                  className="text-xs border-gray-600 hover:border-blue-500"
+                  className="text-xs h-7 border-gray-600 hover:border-blue-500"
                 >
-                  Load Simple Sample
+                  Simple
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => loadSampleData("repeated")}
-                  className="text-xs border-gray-600 hover:border-blue-500"
+                  className="text-xs h-7 border-gray-600 hover:border-blue-500"
                 >
-                  Load Repeated Sample
+                  Repeated
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => loadSampleData("complex")}
-                  className="text-xs border-gray-600 hover:border-blue-500"
+                  className="text-xs h-7 border-gray-600 hover:border-blue-500"
                 >
-                  Load Complex Sample
+                  Complex
                 </Button>
+                <span className="ml-1 text-xs text-gray-400 self-center">← Sample data</span>
               </div>
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="protobufBytes" className="text-sm font-medium">
-                Protobuf Bytes
-              </Label>
-              <Textarea
-                id="protobufBytes"
-                placeholder="Paste your protobuf bytes here (hex: 0a0b48656c6c6f20576f726c64, base64: CgtIZWxsbyBXb3JsZA==, or bytes: 10,11,72,101,108,108,111,32,87,111,114,108,100)"
-                className="min-h-[120px] font-mono text-sm bg-[#303134] border-gray-700 focus:border-blue-500 focus:ring-blue-500"
-                value={protobufBytes}
-                onChange={(e) => setProtobufBytes(e.target.value)}
-              />
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Left column: Protobuf Bytes */}
+              <div className="space-y-2">
+                <Label htmlFor="protobufBytes" className="text-sm font-medium">
+                  Protobuf Bytes
+                </Label>
+                <Textarea
+                  id="protobufBytes"
+                  placeholder="Paste your protobuf bytes here (hex: 0a0b48656c6c6f20576f726c64, base64: CgtIZWxsbyBXb3JsZA==, or bytes: 10,11,72...)"
+                  className="min-h-[100px] font-mono text-sm bg-[#303134] border-gray-700 focus:border-blue-500 focus:ring-blue-500"
+                  value={protobufBytes}
+                  onChange={(e) => setProtobufBytes(e.target.value)}
+                />
+                <p className="text-xs text-gray-400">Enter hex, base64, or comma-separated bytes</p>
+              </div>
+              
+              {/* Right column: Proto File Selection */}
+              <div className="space-y-2">
+                <div className="flex-1">
+                  <ProtoFileSelector onFilesSelected={handleProtoFilesSelected} selectedFiles={protoFiles} />
+                </div>
+                
+                {availableMessageTypes.length > 0 && (
+                  <div className="mt-3">
+                    <MessageTypeSelector
+                      messageTypes={availableMessageTypes}
+                      selectedType={selectedMessageType}
+                      onTypeSelected={setSelectedMessageType}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
-            <ProtoFileSelector onFilesSelected={handleProtoFilesSelected} selectedFiles={protoFiles} />
-
-            {availableMessageTypes.length > 0 && (
-              <MessageTypeSelector
-                messageTypes={availableMessageTypes}
-                selectedType={selectedMessageType}
-                onTypeSelected={setSelectedMessageType}
-              />
-            )}
-
             {info && (
-              <Alert className="bg-blue-900/30 border-blue-800 text-blue-200">
+              <Alert className="bg-blue-900/30 border-blue-800 text-blue-200 py-2">
                 <Info className="h-4 w-4" />
-                <AlertDescription>{info}</AlertDescription>
+                <AlertDescription className="text-sm">{info}</AlertDescription>
               </Alert>
             )}
 
             {error && (
-              <Alert variant="destructive" className="bg-red-900/30 border-red-800 text-red-200">
+              <Alert variant="destructive" className="bg-red-900/30 border-red-800 text-red-200 py-2">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription className="text-sm">{error}</AlertDescription>
               </Alert>
             )}
 

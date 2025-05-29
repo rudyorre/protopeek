@@ -14,11 +14,11 @@ export function MessageTypeSelector({ messageTypes, selectedType, onTypeSelected
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
       <Label className="text-sm font-medium">Message Type</Label>
       <Select value={selectedType || ""} onValueChange={onTypeSelected}>
-        <SelectTrigger className="bg-[#303134] border-gray-700 focus:border-blue-500">
-          <SelectValue placeholder="Select a message type to decode" />
+        <SelectTrigger className="bg-[#303134] border-gray-700 focus:border-blue-500 h-9">
+          <SelectValue placeholder="Select a message type" />
         </SelectTrigger>
         <SelectContent className="bg-[#303134] border-gray-700">
           {messageTypes.map((type) => (
@@ -28,7 +28,7 @@ export function MessageTypeSelector({ messageTypes, selectedType, onTypeSelected
           ))}
         </SelectContent>
       </Select>
-      <p className="text-xs text-gray-400">Choose which message type to use for decoding your protobuf data</p>
+      <p className="text-xs text-gray-400">Choose which message type to use for decoding</p>
     </div>
   )
 }
