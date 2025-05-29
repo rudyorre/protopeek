@@ -64,7 +64,7 @@ npm start
 - **Icons**: Lucide React
 - **Development**: TypeScript, ESLint
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 protobuf-decoder/
