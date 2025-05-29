@@ -113,9 +113,9 @@ export default function Home() {
 
   const loadSampleData = (type: "simple" | "repeated" | "complex") => {
     const samples = {
-      simple: "0a0a4a6f686e20446f6512d2091a106a6f686e406578616d706c652e636f6d",
+      simple: "ChVTaW1wbGUgUGVyc29uIG1lc3NhZ2U=",
       repeated:
-        "0a0a4d79205461677312094a6f686e20446f651a0a696d706f7274616e741a04776f726b1a08706572736f6e616c1a06757267656e741a09666f6c6c6f772d7570",
+        "ChxNZXNzYWdlIHdpdGggcmVwZWF0ZWQgZmllbGRzEkEKB015IFRhZ3MSCEpvaG4gRG9lGglpbXBvcnRhbnQaBHdvcmsaCHBlcnNvbmFsGgZ1cmdlbnQaCWZvbGxvdy11cA==",
       complex:
         "0a2e0a084a6f686e20446f6510d20912106a6f686e406578616d706c652e636f6d1a0a0a08353535343332311001220a0a08353535313233341000",
     }
