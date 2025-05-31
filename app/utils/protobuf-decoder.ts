@@ -306,14 +306,5 @@ export function parseProtobufInput(input: string): Uint8Array {
     // Not valid base64, continue to next format
   }
 
-  // Try to parse as comma-separated decimal bytes
-  if (/^[\d,\s]+$/.test(cleaned)) {
-    const numbers = cleaned.split(",").map((n) => Number.parseInt(n.trim(), 10))
-    if (numbers.every((n) => !isNaN(n) && n >= 0 && n <= 255)) {
-      console.log(`Parsed as comma-separated bytes: ${numbers.length} bytes`)
-      return new Uint8Array(numbers)
-    }
-  }
-
   throw new Error("Invalid protobuf input format. Expected hex, base64, or comma-separated bytes.")
 }

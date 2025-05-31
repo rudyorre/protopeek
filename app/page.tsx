@@ -135,7 +135,7 @@ export default function Home() {
           <CardHeader>
             <CardTitle className="text-xl font-medium">Input Data</CardTitle>
             <CardDescription>
-              Paste your protobuf bytes to decode the data (hex, base64, or comma-separated bytes)
+              Paste your protobuf bytes to decode the data (base64 or hex)
               <div className="mt-2 flex flex-wrap gap-1">
                 <Button
                   variant="outline"
@@ -178,7 +178,7 @@ export default function Home() {
                 </div>
                 <Textarea
                   id="protobufBytes"
-                  placeholder="Paste your protobuf bytes here (hex: 0a0b48656c6c6f20576f726c64, base64: CgtIZWxsbyBXb3JsZA==, or bytes: 10,11,72...)"
+                  placeholder="Paste your protobuf bytes here (base64: CgtIZWxsbyBXb3JsZA== or hex: 0a0b48656c6c6f20576f726c64)"
                   className="mt-2 min-h-[85px] h-[85px] font-mono text-sm bg-[#303134] border-gray-700 focus:border-blue-500 focus:ring-blue-500"
                   value={protobufBytes}
                   onChange={(e) => setProtobufBytes(e.target.value)}
