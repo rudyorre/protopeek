@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Download, AlertCircle, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ProtoVisualizer } from "./components/proto-visualizer"
@@ -205,14 +205,14 @@ export default function Home() {
             </div>
 
             {info && (
-              <Alert className="bg-blue-900/30 border-blue-800 text-blue-200 py-2">
+              <Alert className="bg-blue-900/30 border-blue-800 text-blue-200 py-2 flex">
                 <Info className="h-4 w-4" />
                 <AlertDescription className="text-sm">{info}</AlertDescription>
               </Alert>
             )}
 
             {error && (
-              <Alert variant="destructive" className="bg-red-900/30 border-red-800 text-red-200 py-2">
+              <Alert variant="destructive" className="bg-red-900/30 border-red-800 text-red-200 py-2 flex">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription className="text-sm">{error}</AlertDescription>
               </Alert>
