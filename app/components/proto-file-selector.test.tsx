@@ -3,23 +3,23 @@ import { ProtoFileSelector } from '@/app/components/proto-file-selector';
 import '@testing-library/jest-dom';
 
 // Create more realistic file mock
-class MockFile {
-  name: string;
-  type: string;
-  size: number;
-  content: string;
+// class MockFile {
+//   name: string;
+//   type: string;
+//   size: number;
+//   content: string;
 
-  constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
-    this.name = name;
-    this.type = options?.type || '';
-    this.size = bits.length;
-    this.content = Array.isArray(bits) ? bits.join('') : String(bits);
-  }
+//   constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
+//     this.name = name;
+//     this.type = options?.type || '';
+//     this.size = bits.length;
+//     this.content = Array.isArray(bits) ? bits.join('') : String(bits);
+//   }
 
-  text() {
-    return Promise.resolve(this.content);
-  }
-}
+//   text() {
+//     return Promise.resolve(this.content);
+//   }
+// }
 
 describe('ProtoFileSelector', () => {
   const mockOnFilesSelected = jest.fn();
