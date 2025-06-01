@@ -1,4 +1,4 @@
-import { Code } from "lucide-react"
+import { Code, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function Header() {
@@ -27,30 +27,15 @@ export function Header() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <a
-              href="https://protobuf.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-300 hover:text-blue-400 transition-colors"
-            >
-              Protobuf Docs
-            </a>
-            <a
-              href="https://grpc.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-300 hover:text-blue-400 transition-colors"
-            >
-              gRPC
-            </a>
             <Button
               variant="outline"
               size="sm"
               className="border-gray-700 hover:border-blue-500 bg-[#303134] hover:bg-[#303134] text-gray-200"
               asChild
             >
-              <a href="https://github.com/protocolbuffers/protobuf/releases" target="_blank" rel="noopener noreferrer">
-                Download protoc
+              <a href="https://github.com/rudyorre/protobuf-decoder" target="_blank" rel="noopener noreferrer">
+                <Github className="h-4 w-4 mr-2" />
+                View on GitHub
               </a>
             </Button>
           </div>
