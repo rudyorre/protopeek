@@ -19,6 +19,35 @@ import { FileUp, Folder, X, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { FileViewerModal } from "./file-viewer-modal"
 
+// File System Access API types
+interface FileSystemFileHandle {
+  kind: "file"
+  getFile: () => Promise<File>
+}
+
+interface FileSystemDirectoryHandle {
+  kind: "directory"
+  name: string
+  entries: () => AsyncIterable<[string, FileSystemHandle]>
+}
+
+type FileSystemHandle = FileSystemFileHandle | FileSystemDirectoryHandle
+
+// Structure types for directory navigation
+interface FileStructure {
+  type: "file"
+  size: number
+  lastModified: number
+  content: string | null
+  error?: string
+}
+
+interface DirectoryStructure {
+  type: "directory"
+  children: Record<string, FileStructure | DirectoryStructure>
+}
+
+// Exported interfaces
 interface ProtoFile {
   name: string
   content: string
@@ -51,8 +80,9 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
             content,
             path: file.name,
           })
-        } catch (err) {
-          console.error(`Error reading file ${file.name}:`, err)
+          } catch (err: unknown) {
+          const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+          console.error(`Error reading file ${file.name}:`, errorMessage)
         }
       }
     }
@@ -73,7 +103,7 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
       }
 
       // @ts-ignore - TypeScript doesn't have types for this API yet
-      const directoryHandle = await window.showDirectoryPicker()
+      const directoryHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker()
 
       console.log("Selected directory:", directoryHandle.name)
 
@@ -83,20 +113,21 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
       console.log("Directory structure:", directoryStructure)
 
       // Extract .proto files from the structure
-      const extractProtoFiles = (structure: any, basePath = "") => {
+      const extractProtoFiles = (
+        structure: Record<string, FileStructure | DirectoryStructure>, 
+        basePath = ""
+      ) => {
         for (const [name, item] of Object.entries(structure)) {
           const currentPath = basePath ? `${basePath}/${name}` : name
 
-          if (item && typeof item === "object") {
-            if (item.type === "file" && name.endsWith(".proto")) {
-              protoFiles.push({
-                name,
-                content: item.content,
-                path: currentPath,
-              })
-            } else if (item.type === "directory") {
-              extractProtoFiles(item.children, currentPath)
-            }
+          if (item.type === "file" && name.endsWith(".proto") && item.content) {
+            protoFiles.push({
+              name,
+              content: item.content,
+              path: currentPath,
+            })
+          } else if (item.type === "directory") {
+            extractProtoFiles((item as DirectoryStructure).children, currentPath)
           }
         }
       }
@@ -110,16 +141,19 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
 
       onFilesSelected(protoFiles)
       setIsModalOpen(false)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error selecting directory:", err)
-      setError(err.message || "Failed to access directory. Please try again.")
+      setError(err instanceof Error ? err.message : "Failed to access directory. Please try again.")
     } finally {
       setIsLoadingDirectory(false)
     }
   }
 
-  const readDirectoryRecursively = async (directoryHandle: any, path: string): Promise<any> => {
-    const structure: any = {}
+  const readDirectoryRecursively = async (
+    directoryHandle: FileSystemDirectoryHandle, 
+    path: string
+  ): Promise<Record<string, FileStructure | DirectoryStructure>> => {
+    const structure: Record<string, FileStructure | DirectoryStructure> = {}
 
     for await (const [name, handle] of directoryHandle.entries()) {
       if (handle.kind === "file") {
@@ -132,17 +166,24 @@ export function ProtoFileSelector({ onFilesSelected, selectedFiles }: ProtoFileS
             lastModified: file.lastModified,
             content: content,
           }
-        } catch (err) {
-          console.warn(`Could not read file ${name}:`, err)
+        } catch (err: unknown) {
+          const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+          console.warn(`Could not read file ${name}:`, errorMessage)
           structure[name] = {
             type: "file",
+            size: 0,
+            lastModified: 0,
+            content: null,
             error: "Could not read file",
           }
         }
       } else if (handle.kind === "directory") {
         structure[name] = {
           type: "directory",
-          children: await readDirectoryRecursively(handle, `${path}/${name}`),
+          children: await readDirectoryRecursively(
+            handle as FileSystemDirectoryHandle, 
+            `${path}/${name}`
+          ),
         }
       }
     }
