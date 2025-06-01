@@ -36,7 +36,7 @@ export class ProtobufDecoder {
           console.log(`Successfully parsed ${file.path}`)
         } catch (parseError) {
           console.error(`Error parsing ${file.path}:`, parseError)
-          throw new Error(`Failed to parse ${file.path}: ${parseError.message}`)
+          throw new Error(`Failed to parse ${file.path}: ${parseError}`)
         }
       }
 
@@ -55,7 +55,7 @@ export class ProtobufDecoder {
       return true
     } catch (error) {
       console.error("Error loading proto files:", error)
-      throw new Error(`Failed to load proto files: ${error.message}`)
+      throw new Error(`Failed to load proto files: ${error}`)
     }
   }
 
@@ -114,7 +114,7 @@ export class ProtobufDecoder {
       }
     } catch (error) {
       console.error("Error decoding with schema:", error)
-      throw new Error(`Failed to decode protobuf data with ${messageTypeName}: ${error.message}`)
+      throw new Error(`Failed to decode protobuf data with ${messageTypeName}: ${error}`)
     }
   }
 
@@ -207,7 +207,7 @@ export class ProtobufDecoder {
       }
     } catch (error) {
       console.error("Error decoding without schema:", error)
-      throw new Error(`Failed to decode protobuf data: ${error.message}`)
+      throw new Error(`Failed to decode protobuf data: ${error}`)
     }
   }
 
