@@ -185,13 +185,13 @@ export default function Home() {
                 />
                 <p className="text-xs text-gray-400 mt-1">Enter hex, base64, or comma-separated bytes</p>
               </div>
-              
+
               {/* Right column: Proto File Selection */}
               <div>
                 <div className="flex-1">
                   <ProtoFileSelector onFilesSelected={handleProtoFilesSelected} selectedFiles={protoFiles} />
                 </div>
-                
+
                 {availableMessageTypes.length > 0 && (
                   <div className="mt-2">
                     <MessageTypeSelector

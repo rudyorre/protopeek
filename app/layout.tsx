@@ -11,9 +11,8 @@ const roboto = Roboto({
 })
 
 export const metadata = {
-  title: "Protobuf Decoder",
+  title: "ProtoPeek",
   description: "A modern tool to decode protobuf data using .proto files",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({
