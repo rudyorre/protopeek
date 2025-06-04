@@ -166,7 +166,7 @@ export function Footer() {
         <div className="mt-8 pt-4 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center">
             <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} <span className="text-gray-300">protobuf-decoder.rudbase.com</span> by{" "}
+              © {new Date().getFullYear()} <span className="text-gray-300">protopeek.rudbase.com</span> by{" "}
               <a
                 href="https://rudyorre.com"
                 target="_blank"

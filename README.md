@@ -1,4 +1,4 @@
-# Protocol Buffers Decoder
+# ProtoPeek
 
 A modern, web-based tool for decoding and visualizing Protocol Buffers (protobuf) data. Built with Next.js, React, and TypeScript, this application provides an intuitive interface for exploring protobuf messages with or without schema files.
 
@@ -32,7 +32,7 @@ A modern, web-based tool for decoding and visualizing Protocol Buffers (protobuf
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/rudyorre/protobuf-decoder.git
+git clone https://github.com/rudyorre/protopeek.git
 cd protobuf-decoder
 ```
 
@@ -67,7 +67,7 @@ npm start
 ## Project Structure
 
 ```
-protobuf-decoder/
+protopeek/
 ├── app/                    # Next.js app directory
 │   ├── components/         # React components
 │   │   ├── header.tsx      # Navigation header

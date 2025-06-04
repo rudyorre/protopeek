@@ -11,7 +11,7 @@ export function Header() {
               <Code className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-medium text-white">Protobuf Decoder</h1>
+              <h1 className="text-xl font-medium text-white">ProtoPeek</h1>
               <div className="hidden sm:block text-xs text-gray-400">
                 by{" "}
                 <a
@@ -33,7 +33,7 @@ export function Header() {
               className="border-gray-700 hover:border-blue-500 bg-[#303134] hover:bg-[#303134] text-gray-200"
               asChild
             >
-              <a href="https://github.com/rudyorre/protobuf-decoder" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/rudyorre/protopeek" target="_blank" rel="noopener noreferrer">
                 <Github className="h-4 w-4 mr-2" />
                 View on GitHub
               </a>
