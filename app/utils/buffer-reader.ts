@@ -69,6 +69,30 @@ export class BufferReader {
     }
 
     /**
+     * Reads a fixed 32-bit value from the buffer.
+     * 
+     * This can represent various 32-bit types like int32, uint32, float, etc.
+     * depending on how the data is interpreted.
+     * 
+     * @returns The raw bytes as a Uint8Array
+     */
+    readFixed32(): Uint8Array {
+        return this.readBytes(4);
+    }
+
+    /**
+     * Reads a fixed 64-bit value from the buffer.
+     * 
+     * This can represent various 64-bit types like int64, uint64, double, etc.
+     * depending on how the data is interpreted.
+     * 
+     * @returns The raw bytes as a Uint8Array
+     */
+    readFixed64(): Uint8Array {
+        return this.readBytes(8);
+    }
+
+    /**
      * Returns the number of unread bytes remaining in the buffer.
      * 
      * This method calculates and returns how many bytes are left to be read from the current
@@ -147,6 +171,10 @@ export function decodeWithoutSchema(
                     value = varint.value;
                     type = "varint";
                     break;
+                case WireType.FIXED64:
+                    value = bytesToUint64(reader.readFixed64());
+                    type = "fixed64"
+                    break;
                 case WireType.LENGTH_DELIMITED:
                     const length = Number(reader.readVarint().value);
                     const data = reader.readBytes(length);
@@ -184,6 +212,10 @@ export function decodeWithoutSchema(
                         .join(' ');
                     type = "bytes";
                     break;
+                case WireType.FIXED32:
+                    value = bytesToUint32(reader.readFixed32());
+                    type = "fixed32"
+                    break;
                 default:
                     throw new Error(`Unknown wire type: ${wireType}`);
             }
@@ -214,4 +246,37 @@ function isPrintableString(str: string): boolean {
   }
   // Simple regex for ASCII printable chars + common Unicode + whitespace
   return /^[\x20-\x7E\s\u00A0-\u024F\u1E00-\u1EFF]*$/.test(str) && str.trim().length > 0;
+}
+
+/**
+ * Interprets a Uint8Array as a 64-bit unsigned integer (little-endian)
+ * 
+ * @param bytes An 8-byte Uint8Array
+ * @returns The decoded bigint
+ */
+function bytesToUint64(bytes: Uint8Array): bigint {
+    if (bytes.length !== 8) {
+        throw new Error("Fixed64 must be exactly 8 bytes");
+    }
+    
+    let value = BigInt(0);
+    for (let i = 0; i < 8; i++) {
+        value += BigInt(bytes[i]) << BigInt(i * 8);
+    }
+    return value;
+}
+
+/**
+ * Interprets a Uint8Array as a 32-bit unsigned integer (little-endian)
+ * 
+ * @param bytes A 4-byte Uint8Array
+ * @returns The decoded number
+ */
+function bytesToUint32(bytes: Uint8Array): number {
+    if (bytes.length !== 4) {
+        throw new Error("Fixed32 must be exactly 4 bytes");
+    }
+    
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    return view.getUint32(0, true); // true for little-endian
 }
