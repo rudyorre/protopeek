@@ -155,11 +155,10 @@ export class ProtobufDecodingError extends Error {
   }
 }
 
-export function decodeProtobufRawMessage(
-    buffer: Uint8Array
-): { fields: RawDecodedField[], leftoverBytes: number } {
+export function decodeProtobufRawMessage(buffer: Uint8Array): RawDecodedField[] {
     const reader = new BufferReader(buffer);
     const fields: RawDecodedField[] = [];
+    const initialLength = buffer.length;
 
     while (reader.leftBytes() > 0) {
         reader.checkpoint();
@@ -192,9 +191,12 @@ export function decodeProtobufRawMessage(
                     // First try to decode as a nested message
                     try {
                         const nestedFields = decodeProtobufRawMessage(data);
-                        // Only consider it a valid nested message if we have fields
-                        // AND if we consumed all the bytes (or close to it)
-                        if (nestedFields.fields.length > 0 && nestedFields.leftoverBytes == 0) {
+
+                        // Check if all bytes were consumed by examining the byterange
+                        if (
+                            nestedFields.length > 0 &&
+                            nestedFields[nestedFields.length - 1].byteRange[1] == data.length
+                        ) {
                             value = nestedFields;
                             type = "message";
                             break; // Exit the case early if successful
@@ -257,7 +259,7 @@ export function decodeProtobufRawMessage(
         }
     }
 
-    return { fields, leftoverBytes: reader.leftBytes() };
+    return fields;
 }
 
 function isPrintableString(str: string): boolean {

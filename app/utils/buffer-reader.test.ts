@@ -8,7 +8,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '08 96 01';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeProtobufRawMessage(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer);
       
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -26,7 +26,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '12 07 74 65 73 74 69 6e 67';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeProtobufRawMessage(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer);
       
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -43,7 +43,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '08 2A 12 05 68 65 6C 6C 6F';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeProtobufRawMessage(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer);
       
       expect(result).toHaveLength(2);
       expect(result[0]).toMatchObject({
@@ -66,7 +66,7 @@ describe('Protocol Buffer Decoder', () => {
       const base64 = 'CgsKCXNvbWV0aGluZw==';
       const buffer = parseProtobufInput(base64);
       
-      const result = decodeProtobufRawMessage(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer);
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
         fieldNumber: 1,
@@ -75,7 +75,7 @@ describe('Protocol Buffer Decoder', () => {
       });
       
       // Check the nested fields
-      const nestedFields = result[0].value.fields;
+      const nestedFields = result[0].value;
       expect(nestedFields).toHaveLength(1);
       expect(nestedFields[0]).toMatchObject({
         fieldNumber: 1,
@@ -94,7 +94,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '0A 03 6F 6E 65 0A 03 74 77 6F 0A 05 74 68 72 65 65';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeProtobufRawMessage(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer);
       
       expect(result).toHaveLength(3);
       
@@ -126,7 +126,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '08 80 80 80 80 10';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeProtobufRawMessage(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer);
       
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -142,7 +142,7 @@ describe('Protocol Buffer Decoder', () => {
         const base64 = 'GgR0aGlzGgJpcxoEanVzdBoHYW5vdGhlchoFMTIzNDUaBXRlc3Qh';
         const buffer = parseProtobufInput(base64);
 
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
 
         // Should decode to 6 string fields with field number 3
         expect(result).toHaveLength(6);
@@ -205,7 +205,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '1D 2A 00 00 00';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -221,7 +221,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '21 2A 00 00 00 00 00 00 00';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -237,7 +237,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '1D FF FF FF FF';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -253,7 +253,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '21 FF FF FF FF FF FF 1F 00';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -272,7 +272,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '08 2A 15 64 00 00 00 19 C8 00 00 00 00 00 00 00 22 04 74 65 73 74';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
         
         expect(result).toHaveLength(4);
         expect(result[0]).toMatchObject({
@@ -308,7 +308,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '0a 0e 0d 2a 00 00 00 11 54 00 00 00 00 00 00 00';
         const buffer = parseProtobufInput(hex);
         
-        const result = decodeProtobufRawMessage(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer);
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -318,7 +318,7 @@ describe('Protocol Buffer Decoder', () => {
         });
         
         // Check the nested fields
-        const nestedFields = result[0].value.fields;
+        const nestedFields = result[0].value;
         expect(nestedFields).toHaveLength(2);
         expect(nestedFields[0]).toMatchObject({
             fieldNumber: 1,
