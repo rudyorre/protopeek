@@ -137,7 +137,7 @@ export enum WireType {
     FIXED32 = 5,
 };
 
-export interface DecodedField {
+export interface RawDecodedField {
     fieldNumber: number;
     wireType: WireType;
     value: any;
@@ -155,11 +155,11 @@ export class ProtobufDecodingError extends Error {
   }
 }
 
-export function decodeWithoutSchema(
+export function decodeProtobufRawMessage(
     buffer: Uint8Array
-): { fields: DecodedField[], leftoverBytes: number } {
+): { fields: RawDecodedField[], leftoverBytes: number } {
     const reader = new BufferReader(buffer);
-    const fields: DecodedField[] = [];
+    const fields: RawDecodedField[] = [];
 
     while (reader.leftBytes() > 0) {
         reader.checkpoint();
@@ -170,7 +170,6 @@ export function decodeWithoutSchema(
             const tag = reader.readVarint();
             const wireType = Number(tag.value & BigInt(7));
             const fieldNumber = Number(tag.value >> BigInt(3));
-            console.log(`Decoding field number ${fieldNumber} with wire type ${wireType}`);
 
             let value: any;
             let type: string;
@@ -192,7 +191,7 @@ export function decodeWithoutSchema(
                     
                     // First try to decode as a nested message
                     try {
-                        const nestedFields = decodeWithoutSchema(data);
+                        const nestedFields = decodeProtobufRawMessage(data);
                         // Only consider it a valid nested message if we have fields
                         // AND if we consumed all the bytes (or close to it)
                         if (nestedFields.fields.length > 0 && nestedFields.leftoverBytes == 0) {

@@ -1,14 +1,14 @@
-import { decodeWithoutSchema, WireType, DecodedField, ProtobufDecodingError } from './buffer-reader';
+import { decodeProtobufRawMessage, WireType, RawDecodedField, ProtobufDecodingError } from './buffer-reader';
 import { parseProtobufInput } from './protobuf-decoder';
 
 describe('Protocol Buffer Decoder', () => {
-  describe('decodeWithoutSchema', () => {
+  describe('decodeProtobufRawMessage', () => {
     test('decodes a simple message with varint field', () => {
       // Field 1: varint with value 150
       const hex = '08 96 01';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeWithoutSchema(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer).fields;
       
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -26,7 +26,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '12 07 74 65 73 74 69 6e 67';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeWithoutSchema(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer).fields;
       
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -43,7 +43,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '08 2A 12 05 68 65 6C 6C 6F';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeWithoutSchema(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer).fields;
       
       expect(result).toHaveLength(2);
       expect(result[0]).toMatchObject({
@@ -66,7 +66,7 @@ describe('Protocol Buffer Decoder', () => {
       const base64 = 'CgsKCXNvbWV0aGluZw==';
       const buffer = parseProtobufInput(base64);
       
-      const result = decodeWithoutSchema(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer).fields;
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
         fieldNumber: 1,
@@ -94,7 +94,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '0A 03 6F 6E 65 0A 03 74 77 6F 0A 05 74 68 72 65 65';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeWithoutSchema(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer).fields;
       
       expect(result).toHaveLength(3);
       
@@ -126,7 +126,7 @@ describe('Protocol Buffer Decoder', () => {
       const hex = '08 80 80 80 80 10';
       const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
       
-      const result = decodeWithoutSchema(buffer).fields;
+      const result = decodeProtobufRawMessage(buffer).fields;
       
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -142,7 +142,7 @@ describe('Protocol Buffer Decoder', () => {
         const base64 = 'GgR0aGlzGgJpcxoEanVzdBoHYW5vdGhlchoFMTIzNDUaBXRlc3Qh';
         const buffer = parseProtobufInput(base64);
 
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
 
         // Should decode to 6 string fields with field number 3
         expect(result).toHaveLength(6);
@@ -205,7 +205,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '1D 2A 00 00 00';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -221,7 +221,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '21 2A 00 00 00 00 00 00 00';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -237,7 +237,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '1D FF FF FF FF';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -253,7 +253,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '21 FF FF FF FF FF FF 1F 00';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -272,7 +272,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '08 2A 15 64 00 00 00 19 C8 00 00 00 00 00 00 00 22 04 74 65 73 74';
         const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
         
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
         
         expect(result).toHaveLength(4);
         expect(result[0]).toMatchObject({
@@ -308,7 +308,7 @@ describe('Protocol Buffer Decoder', () => {
         const hex = '0a 0e 0d 2a 00 00 00 11 54 00 00 00 00 00 00 00';
         const buffer = parseProtobufInput(hex);
         
-        const result = decodeWithoutSchema(buffer).fields;
+        const result = decodeProtobufRawMessage(buffer).fields;
         
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -341,11 +341,11 @@ describe('Protocol Buffer Decoder', () => {
         const startGroupBuffer = parseProtobufInput(startGroupHex);
         
         expect(() => {
-            decodeWithoutSchema(startGroupBuffer);
+            decodeProtobufRawMessage(startGroupBuffer);
         }).toThrow(ProtobufDecodingError);
         
         try {
-            decodeWithoutSchema(startGroupBuffer);
+            decodeProtobufRawMessage(startGroupBuffer);
         } catch (e: unknown) {
             expect(e).toBeInstanceOf(ProtobufDecodingError);
             if (e instanceof ProtobufDecodingError) {
