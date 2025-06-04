@@ -1,4 +1,4 @@
-import { decodeWithoutSchema, WireType, DecodedField } from './buffer-reader';
+import { decodeWithoutSchema, WireType, DecodedField, ProtobufDecodingError } from './buffer-reader';
 import { parseProtobufInput } from './protobuf-decoder';
 
 describe('Protocol Buffer Decoder', () => {
@@ -334,4 +334,24 @@ describe('Protocol Buffer Decoder', () => {
         });
     });
   });
+
+    test('throws error for START_GROUP and END_GROUP wire types', () => {
+        // Field 3: START_GROUP (wireType 3)
+        const startGroupHex = '1b'; 
+        const startGroupBuffer = parseProtobufInput(startGroupHex);
+        
+        expect(() => {
+            decodeWithoutSchema(startGroupBuffer);
+        }).toThrow(ProtobufDecodingError);
+        
+        try {
+            decodeWithoutSchema(startGroupBuffer);
+        } catch (e: unknown) {
+            expect(e).toBeInstanceOf(ProtobufDecodingError);
+            if (e instanceof ProtobufDecodingError) {
+                expect(e.errorType).toBe('UNSUPPORTED_WIRE_TYPE');
+                expect(e.message).toMatch(/Wire type 3 \(START_GROUP\)/);
+            }
+        }
+    });
 });

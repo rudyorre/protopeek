@@ -145,6 +145,16 @@ export interface DecodedField {
     byteRange: [number, number];
 }
 
+export class ProtobufDecodingError extends Error {
+  constructor(
+    message: string,
+    public readonly errorType: 'UNSUPPORTED_WIRE_TYPE' | 'PARSING_ERROR' | 'INVALID_FORMAT'
+  ) {
+    super(message);
+    this.name = 'ProtobufDecodingError';
+  }
+}
+
 export function decodeWithoutSchema(
     buffer: Uint8Array
 ): { fields: DecodedField[], leftoverBytes: number } {
@@ -160,6 +170,7 @@ export function decodeWithoutSchema(
             const tag = reader.readVarint();
             const wireType = Number(tag.value & BigInt(7));
             const fieldNumber = Number(tag.value >> BigInt(3));
+            console.log(`Decoding field number ${fieldNumber} with wire type ${wireType}`);
 
             let value: any;
             let type: string;
@@ -212,6 +223,12 @@ export function decodeWithoutSchema(
                         .join(' ');
                     type = "bytes";
                     break;
+                case WireType.START_GROUP:
+                case WireType.END_GROUP:
+                        throw new ProtobufDecodingError(
+                            `Wire type ${wireType} (${wireType === WireType.START_GROUP ? 'START_GROUP' : 'END_GROUP'}) is deprecated and not supported`,
+                            'UNSUPPORTED_WIRE_TYPE'
+                        );
                 case WireType.FIXED32:
                     value = bytesToUint32(reader.readFixed32());
                     type = "fixed32"
@@ -231,6 +248,10 @@ export function decodeWithoutSchema(
                 byteRange,
             });
         } catch (error) {
+            // Rethrow specific protocol buffer errors
+            if (error instanceof ProtobufDecodingError && error.errorType === 'UNSUPPORTED_WIRE_TYPE') {
+                throw error;
+            }
             // If we fail to parse, reset and skip this field
             reader.resetToCheckpoint();
             break;
