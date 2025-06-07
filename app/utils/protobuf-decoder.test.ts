@@ -1,4 +1,3 @@
-
 import { parseProtobufInput, ProtobufDecoder, ProtobufDecodingError, WireType } from '@/app/utils/protobuf-decoder';
 import { expect, describe, test } from '@jest/globals';
 
@@ -39,7 +38,7 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 1,
       wireType: WireType.VARINT,
       type: 'varint',
-      value: BigInt(150)
+      value: '150'
     });
     // Check byte range
     expect(result[0].byteRange![0]).toBeLessThan(result[0].byteRange![1]);
@@ -74,7 +73,7 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 1,
       wireType: WireType.VARINT,
       type: 'varint',
-      value: BigInt(42)
+      value: '42'
     });
     expect(result[1]).toMatchObject({
       fieldNumber: 2,
@@ -157,7 +156,7 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 1,
       wireType: WireType.VARINT,
       type: 'varint',
-      value: BigInt('4294967296') // 2^32
+      value: '4294967296' // 2^32
     });
   });
     
@@ -236,7 +235,7 @@ describe('decodeWithoutSchema', () => {
           fieldNumber: 3,
           wireType: WireType.FIXED32,
           type: 'fixed32',
-          value: 42 // 0x0000002A in little-endian
+          value: '42' // 0x0000002A in little-endian
       });
   });
 
@@ -252,7 +251,7 @@ describe('decodeWithoutSchema', () => {
           fieldNumber: 4,
           wireType: WireType.FIXED64,
           type: 'fixed64',
-          value: BigInt(42) // 0x000000000000002A in little-endian
+          value: '42' // 0x000000000000002A in little-endian
       });
   });
 
@@ -268,7 +267,7 @@ describe('decodeWithoutSchema', () => {
           fieldNumber: 3,
           wireType: WireType.FIXED32,
           type: 'fixed32',
-          value: 4294967295 // 0xFFFFFFFF (max uint32)
+          value: '4294967295' // 0xFFFFFFFF (max uint32)
       });
       });
 
@@ -284,7 +283,7 @@ describe('decodeWithoutSchema', () => {
           fieldNumber: 4,
           wireType: WireType.FIXED64,
           type: 'fixed64',
-          value: BigInt('9007199254740991') // 2^53-1
+          value: '9007199254740991' // 2^53-1
       });
   });
 
@@ -303,19 +302,19 @@ describe('decodeWithoutSchema', () => {
           fieldNumber: 1,
           wireType: WireType.VARINT,
           type: 'varint',
-          value: BigInt(42)
+          value: '42'
       });
       expect(result[1]).toMatchObject({
           fieldNumber: 2,
           wireType: WireType.FIXED32,
           type: 'fixed32',
-          value: 100
+          value: '100'
       });
       expect(result[2]).toMatchObject({
           fieldNumber: 3,
           wireType: WireType.FIXED64,
           type: 'fixed64',
-          value: BigInt(200)
+          value: '200'
       });
       expect(result[3]).toMatchObject({
           fieldNumber: 4,
@@ -348,13 +347,13 @@ describe('decodeWithoutSchema', () => {
             fieldNumber: 1,
             wireType: WireType.FIXED32,
             type: 'fixed32',
-            value: 42
+            value: '42'
         });
         expect(nestedFields[1]).toMatchObject({
             fieldNumber: 2,
             wireType: WireType.FIXED64,
             type: 'fixed64',
-            value: BigInt(84)
+            value: '84'
         });
     });
 
