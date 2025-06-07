@@ -3,23 +3,30 @@ import { ProtoByteTable } from '@/app/components/proto-byte-table';
 import '@testing-library/jest-dom';
 
 describe('ProtoByteTable', () => {
-  const sampleData = JSON.stringify({
-    message: 'Person',
-    fields: {
-      name: {
-        type: 'string',
-        value: 'John Doe'
-      },
-      id: {
-        type: 'int32',
-        value: 123
-      },
-      email: {
-        type: 'string',
-        value: 'john@example.com'
-      }
+  // Use DecodedField[] array format with all values as strings
+  const sampleData = JSON.stringify([
+    {
+      fieldNumber: 1,
+      type: 'string',
+      value: 'John Doe',
+      wireType: undefined,
+      byteRange: [0, 8]
+    },
+    {
+      fieldNumber: 2,
+      type: 'int32',
+      value: '123',
+      wireType: undefined,
+      byteRange: [8, 12]
+    },
+    {
+      fieldNumber: 3,
+      type: 'string',
+      value: 'john@example.com',
+      wireType: undefined,
+      byteRange: [12, 28]
     }
-  });
+  ]);
 
   test('renders the table with headers', () => {
     render(<ProtoByteTable data={sampleData} />);
@@ -32,42 +39,27 @@ describe('ProtoByteTable', () => {
     const headerCells = screen.getAllByRole('columnheader');
     expect(headerCells.length).toBeGreaterThan(0);
 
-    // Alternative approach: check for specific headers that we know exist
-    const commonHeaders = ['Field', 'Type', 'Value'];
+    // Check for specific headers
+    const commonHeaders = ['Byte Range', 'Field Number', 'Type', 'Content'];
     commonHeaders.forEach(header => {
-      const element = screen.queryByText(header) ||
-        screen.queryByText(header, { exact: false }) ||
-        screen.queryByText(new RegExp(header, 'i'));
-
-      if (element) {
-        expect(element).toBeInTheDocument();
-      }
+      expect(screen.getByText(header, { exact: false })).toBeInTheDocument();
     });
   });
 
   test('renders field rows for each field in the data', () => {
     render(<ProtoByteTable data={sampleData} />);
 
-    // Use more flexible text matching for fields
-    const fields = ['name', 'id', 'email'];
-    fields.forEach(field => {
-      expect(
-        screen.getByText(content =>
-          content.includes(field),
-          { exact: false }
-        )
-      ).toBeInTheDocument();
+    // Check for field numbers and types
+    ['1', '2', '3'].forEach(num => {
+      expect(screen.getAllByText(num, { exact: false }).length).toBeGreaterThan(0);
+    });
+    ['string', 'int32'].forEach(type => {
+      expect(screen.getAllByText(type, { exact: false }).length).toBeGreaterThan(0);
     });
 
-    // Use more flexible text matching for values
-    const values = ['John Doe', '123', 'john@example.com'];
-    values.forEach(value => {
-      expect(
-        screen.getByText(content =>
-          content.includes(value),
-          { exact: false }
-        )
-      ).toBeInTheDocument();
+    // Check for string values
+    ['John Doe', '123', 'john@example.com'].forEach(value => {
+      expect(screen.getByText(value, { exact: false })).toBeInTheDocument();
     });
   });
 });
