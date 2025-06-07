@@ -75,7 +75,7 @@ describe('Protocol Buffer Decoder', () => {
       });
       
       // Check the nested fields
-      const nestedFields = result[0].value;
+      const nestedFields = result[0].value as RawDecodedField[];
       expect(nestedFields).toHaveLength(1);
       expect(nestedFields[0]).toMatchObject({
         fieldNumber: 1,
@@ -318,7 +318,7 @@ describe('Protocol Buffer Decoder', () => {
         });
         
         // Check the nested fields
-        const nestedFields = result[0].value;
+        const nestedFields = result[0].value as RawDecodedField[];
         expect(nestedFields).toHaveLength(2);
         expect(nestedFields[0]).toMatchObject({
             fieldNumber: 1,
