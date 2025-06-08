@@ -10,7 +10,7 @@
 //   },
 //   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 //   testMatch: [
-//     '**/*.test.ts', 
+//     '**/*.test.ts',
 //     '**/*.test.tsx'
 //   ],
 //   testPathIgnorePatterns: ['/node_modules/', '/.next/'],
@@ -34,13 +34,8 @@ const customJestConfig = {
     // Handle module aliases (if you configured some in tsconfig.json or next.config.js)
     '^@/(.*)$': '<rootDir>/$1',
   },
-  testMatch: [
-    '**/*.test.ts',
-    '**/*.test.tsx'
-  ],
-  transformIgnorePatterns: [
-    '/node_modules/(?!(@radix-ui|@babel|@hookform)/)'
-  ]
+  testMatch: ['**/*.test.ts', '**/*.test.tsx'],
+  transformIgnorePatterns: ['/node_modules/(?!(@radix-ui|@babel|@hookform)/)'],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

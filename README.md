@@ -5,16 +5,19 @@ A modern, web-based tool for decoding and visualizing Protocol Buffers (protobuf
 ## Features
 
 - **Multi-format Visualization**: View decoded protobuf data in multiple formats
+
   - **Tree View**: Hierarchical visualization of message structure
   - **Byte Table**: Detailed byte-level breakdown with field mappings
   - **Raw JSON**: Standard JSON output for easy copying
   - **Proto Structure**: Schema visualization when .proto files are provided
 
-- **Flexible Input Options**: 
+- **Flexible Input Options**:
+
   - Paste protobuf bytes directly
   - Optional .proto schema file upload for enhanced field naming
 
 - **Modern UI/UX**:
+
   - Dark theme optimized for developers
   - Responsive design for all screen sizes
   - Interactive collapsible tree structures
@@ -31,17 +34,20 @@ A modern, web-based tool for decoding and visualizing Protocol Buffers (protobuf
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/rudyorre/protopeek.git
 cd protobuf-decoder
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
