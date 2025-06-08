@@ -1,13 +1,36 @@
 import protobuf from "protobufjs"
+import { BufferReader } from "./buffer-reader";
 
+export enum WireType {
+    VARINT = 0,
+    FIXED64 = 1,
+    LENGTH_DELIMITED = 2,
+    START_GROUP = 3, // Deprecated
+    END_GROUP = 4, // Deprecated
+    FIXED32 = 5,
+};
 export interface DecodedField {
-  type: string
-  value: any
+  type: string;
+  value: string | DecodedField[];
+  message?: string; // Optional, for named messages
+  fieldNumber?: number; // Optional, for schemaless decoding
+  wireType?: WireType;  // Optional, for schemaless decoding
+  byteRange?: [number, number]; // Optional, for schemaless decoding
 }
 
 export interface DecodedMessage {
   message: string
   fields: Record<string, DecodedField>
+}
+
+export class ProtobufDecodingError extends Error {
+  constructor(
+    message: string,
+    public readonly errorType: 'UNSUPPORTED_WIRE_TYPE' | 'PARSING_ERROR' | 'INVALID_FORMAT'
+  ) {
+    super(message);
+    this.name = 'ProtobufDecodingError';
+  }
 }
 
 export class ProtobufDecoder {
@@ -73,7 +96,7 @@ export class ProtobufDecoder {
     }
   }
 
-  async decodeWithSchema(bytes: Uint8Array, messageTypeName?: string): Promise<DecodedMessage> {
+  async decodeWithSchema(bytes: Uint8Array, messageTypeName?: string): Promise<DecodedField[]> {
     if (!this.root) {
       throw new Error("No proto files loaded")
     }
@@ -108,153 +131,169 @@ export class ProtobufDecoder {
 
       console.log("Decoded object:", object)
 
-      return {
-        message: messageTypeName,
-        fields: this.convertToDecodedFields(object, messageType),
-      }
+      return this.convertToDecodedFields(object, messageType);
     } catch (error) {
       console.error("Error decoding with schema:", error)
       throw new Error(`Failed to decode protobuf data with ${messageTypeName}: ${error}`)
     }
   }
 
-  async decodeWithoutSchema(bytes: Uint8Array): Promise<DecodedMessage> {
-    try {
-      console.log(`Decoding ${bytes.length} bytes without schema`)
+  decodeWithoutSchema(buffer: Uint8Array): DecodedField[] {
+    const reader = new BufferReader(buffer);
+    const fields: DecodedField[] = [];
 
-      // Create a reader for the bytes
-      const reader = protobuf.Reader.create(bytes)
-      const fields: Record<string, DecodedField> = {}
+    while (reader.leftBytes() > 0) {
+        reader.checkpoint();
+        const startPos = reader.leftBytes();
 
-      while (reader.pos < reader.len) {
-        const tag = reader.uint32()
-        const fieldNumber = tag >>> 3
-        const wireType = tag & 7
+        try {
+            // Read tag
+            const tag = reader.readVarint();
+            const wireType = Number(tag.value & BigInt(7));
+            const fieldNumber = Number(tag.value >> BigInt(3));
 
-        console.log(`Field ${fieldNumber}, wire type ${wireType}, position ${reader.pos}`)
+            let value: DecodedField["value"];
+            let type: DecodedField["type"];
 
-        let value: any
-        let type: string
+            // Process based on WireType
+            switch (wireType) {
+                case WireType.VARINT:
+                    const varint = reader.readVarint();
+                    value = varint.value.toString();
+                    type = "varint";
+                    break;
+                case WireType.FIXED64:
+                    value = bytesToUint64(reader.readFixed64()).toString();
+                    type = "fixed64"
+                    break;
+                case WireType.LENGTH_DELIMITED:
+                    const length = Number(reader.readVarint().value);
+                    const data = reader.readBytes(length);
+                    
+                    // First try to decode as a nested message
+                    try {
+                        const nestedFields = this.decodeWithoutSchema(data);
 
-        switch (wireType) {
-          case 0: // Varint
-            value = reader.uint64()
-            type = "varint"
-            // Convert to number if it fits in safe integer range
-            if (typeof value === "object" && value.toNumber) {
-              const num = value.toNumber()
-              if (Number.isSafeInteger(num)) {
-                value = num
-              } else {
-                value = value.toString()
-              }
+                        // Check if all bytes were consumed by examining the byterange
+                        if (
+                            nestedFields.length > 0 &&
+                            nestedFields[nestedFields.length - 1].byteRange![1] === data.length
+                        ) {
+                            value = nestedFields;
+                            type = "message";
+                            break; // Exit the case early if successful
+                        }
+                    } catch {
+                        // Failed to decode as message, continue to string/bytes
+                    }
+                    
+                    // Next try as a UTF-8 string
+                    try {
+                        const str = Buffer.from(data).toString('utf8');
+                        // Only consider it a string if it's printable
+                        if (isPrintableString(str)) {
+                            value = str;
+                            type = "string";
+                            break; // Exit the case early if successful
+                        }
+                    } catch {
+                        // Failed to decode as string, continue to bytes
+                    }
+                    
+                    // Fallback to bytes representation
+                    value = Array.from(data)
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join(' ');
+                    type = "bytes";
+                    break;
+                case WireType.START_GROUP:
+                case WireType.END_GROUP:
+                        throw new ProtobufDecodingError(
+                            `Wire type ${wireType} (${wireType === WireType.START_GROUP ? 'START_GROUP' : 'END_GROUP'}) is deprecated and not supported`,
+                            'UNSUPPORTED_WIRE_TYPE'
+                        );
+                case WireType.FIXED32:
+                    value = bytesToUint32(reader.readFixed32()).toString();
+                    type = "fixed32"
+                    break;
+                default:
+                    throw new Error(`Unknown wire type: ${wireType}`);
             }
-            break
-          case 1: // Fixed64
-            value = reader.fixed64()
-            type = "fixed64"
-            if (typeof value === "object" && value.toString) {
-              value = value.toString()
-            }
-            break
-          case 2: // Length-delimited
-            const length = reader.uint32()
-            const data = reader.buf.slice(reader.pos, reader.pos + length)
-            reader.pos += length
 
-            // Try to decode as string first
-            try {
-              const str = new TextDecoder("utf-8", { fatal: true }).decode(data)
-              if (this.isPrintableString(str)) {
-                value = str
-                type = "string"
-              } else {
-                throw new Error("Not a valid UTF-8 string")
-              }
-            } catch {
-              // Try to decode as nested message
-              try {
-                const nestedDecoded = await this.decodeWithoutSchema(data)
-                if (Object.keys(nestedDecoded.fields).length > 0) {
-                  value = nestedDecoded.fields
-                  type = "message"
-                } else {
-                  throw new Error("Empty nested message")
-                }
-              } catch {
-                // Fall back to bytes
-                value = Array.from(data)
-                  .map((b) => b.toString(16).padStart(2, "0"))
-                  .join(" ")
-                type = "bytes"
-              }
+            const endPos = reader.leftBytes();
+            const byteRange: [number, number] = [buffer.length - startPos, buffer.length - endPos];
+
+            fields.push({
+                fieldNumber,
+                wireType,
+                value,
+                type,
+                byteRange,
+            });
+        } catch (error) {
+            // Rethrow specific protocol buffer errors
+            if (error instanceof ProtobufDecodingError && error.errorType === 'UNSUPPORTED_WIRE_TYPE') {
+                throw error;
             }
-            break
-          case 5: // Fixed32
-            value = reader.fixed32()
-            type = "fixed32"
-            break
-          default:
-            throw new Error(`Unknown wire type: ${wireType}`)
+            // If we fail to parse, reset and skip this field
+            reader.resetToCheckpoint();
+            break;
         }
-
-        fields[fieldNumber.toString()] = { type, value }
-      }
-
-      return {
-        message: "Unknown",
-        fields,
-      }
-    } catch (error) {
-      console.error("Error decoding without schema:", error)
-      throw new Error(`Failed to decode protobuf data: ${error}`)
     }
-  }
 
-  private isPrintableString(str: string): boolean {
-    // Check if string contains only printable characters and has reasonable length
-    if (str.length === 0 || str.length > 1000) return false
+    return fields;
+}
 
-    // Allow printable ASCII, common Unicode characters, and whitespace
-    return /^[\x20-\x7E\s\u00A0-\u024F\u1E00-\u1EFF]*$/.test(str) && str.trim().length > 0
-  }
+  private convertToDecodedFields(obj: any, messageType?: protobuf.Type): DecodedField[] {
+    const fields: DecodedField[] = [];
 
-  private convertToDecodedFields(obj: any, messageType?: protobuf.Type): Record<string, DecodedField> {
-    const fields: Record<string, DecodedField> = {}
+    if (!obj || typeof obj !== "object") return fields;
 
-    for (const [key, value] of Object.entries(obj)) {
-      if (value === null || value === undefined) continue
+    // If we have a messageType, use its fields for stronger typing
+    const fieldEntries = messageType
+      ? Object.entries(messageType.fields)
+      : Object.entries(obj);
 
-      const field = messageType?.fields[key]
-      let type = field?.type || "unknown"
-      let convertedValue = value
+    for (const [key, fieldInfo] of fieldEntries) {
+      // Get the value from the object (by field name)
+      const value = obj[key];
+      if (value === null || value === undefined) continue;
+
+      // If using messageType, fieldInfo is a protobuf.Field; otherwise, it's the value itself
+      const field = messageType ? (fieldInfo as protobuf.Field) : undefined;
+      let type = field?.type || typeof value;
+      let convertedValue: DecodedField["value"] = value;
 
       if (Array.isArray(value)) {
-        if (value.length === 0) continue
-
-        const firstItem = value[0]
+        if (value.length === 0) continue;
+        const firstItem = value[0];
         if (typeof firstItem === "object" && firstItem !== null) {
-          type = "repeated_message"
+          type = "repeated_message";
           convertedValue = value.map((item) => ({
             type: "message",
-            value: this.convertToDecodedFields(item),
-          }))
+            value: this.convertToDecodedFields(item, field?.resolvedType as protobuf.Type),
+          }));
         } else {
-          type = `repeated_${this.getScalarType(firstItem)}`
-          convertedValue = value
+          type = `repeated_${this.getScalarType(firstItem)}`;
+          convertedValue = value;
         }
       } else if (typeof value === "object" && value !== null) {
-        type = "message"
-        convertedValue = this.convertToDecodedFields(value)
+        type = "message";
+        convertedValue = this.convertToDecodedFields(value, field?.resolvedType as protobuf.Type);
       } else {
-        type = field?.type || this.getScalarType(value)
-        convertedValue = value
+        type = field?.type || this.getScalarType(value);
+        convertedValue = value;
       }
 
-      fields[key] = { type, value: convertedValue }
+      fields.push({
+        type,
+        value: convertedValue,
+        message: field?.resolvedType?.name,
+        fieldNumber: field?.id,
+      });
     }
 
-    return fields
+    return fields;
   }
 
   private getScalarType(value: any): string {
@@ -307,4 +346,45 @@ export function parseProtobufInput(input: string): Uint8Array {
   }
 
   throw new Error("Invalid protobuf input format. Expected hex, base64, or comma-separated bytes.")
+}
+
+function isPrintableString(str: string): boolean {
+  if (str.length === 0 || str.length > 1000) {
+    return false;
+  }
+  // Simple regex for ASCII printable chars + common Unicode + whitespace
+  return /^[\x20-\x7E\s\u00A0-\u024F\u1E00-\u1EFF]*$/.test(str) && str.trim().length > 0;
+}
+
+/**
+ * Interprets a Uint8Array as a 64-bit unsigned integer (little-endian)
+ * 
+ * @param bytes An 8-byte Uint8Array
+ * @returns The decoded bigint
+ */
+function bytesToUint64(bytes: Uint8Array): bigint {
+    if (bytes.length !== 8) {
+        throw new Error("Fixed64 must be exactly 8 bytes");
+    }
+    
+    let value = BigInt(0);
+    for (let i = 0; i < 8; i++) {
+        value += BigInt(bytes[i]) << BigInt(i * 8);
+    }
+    return value;
+}
+
+/**
+ * Interprets a Uint8Array as a 32-bit unsigned integer (little-endian)
+ * 
+ * @param bytes A 4-byte Uint8Array
+ * @returns The decoded number
+ */
+function bytesToUint32(bytes: Uint8Array): number {
+    if (bytes.length !== 4) {
+        throw new Error("Fixed32 must be exactly 4 bytes");
+    }
+    
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    return view.getUint32(0, true); // true for little-endian
 }

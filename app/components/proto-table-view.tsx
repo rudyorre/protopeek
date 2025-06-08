@@ -3,23 +3,29 @@
 import { useState } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-interface ProtoField {
-  type: string
-  value: any
-}
-
-interface ProtoData {
-  message: string
-  fields: Record<string, ProtoField>
-}
+import { DecodedField } from "../utils/protobuf-decoder"
+import React from "react"
 
 export function ProtoTableView({ data }: { data: string }) {
-  const parsedData: ProtoData = JSON.parse(data)
-
+  // Accepts DecodedField[] or a root DecodedField
+  let root: DecodedField | null = null
+  try {
+    const parsed = JSON.parse(data)
+    if (Array.isArray(parsed)) {
+      root = { type: "message", value: parsed }
+    } else if (parsed && parsed.type === "message" && Array.isArray(parsed.value)) {
+      root = parsed
+    } else {
+      root = { type: "message", value: [] }
+    }
+  } catch {
+    root = { type: "message", value: [] }
+  }
+  if (!root || !Array.isArray(root.value)) return null
+  const messageName = root.message || "Message"
   return (
     <div className="bg-[#303134] rounded-md">
-      <div className="text-lg font-medium p-4 text-white border-b border-gray-700">{parsedData.message}</div>
+      <div className="text-lg font-medium p-4 text-white border-b border-gray-700">{messageName}</div>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -30,7 +36,7 @@ export function ProtoTableView({ data }: { data: string }) {
             </tr>
           </thead>
           <tbody>
-            <ProtoTableRows data={{ type: "message", value: parsedData.fields }} />
+            <ProtoTableRows fields={Array.isArray(root.value) && root.value.every(v => typeof v === "object") ? (root.value as DecodedField[]) : []} level={0} parentKey="" />
           </tbody>
         </table>
       </div>
@@ -38,42 +44,28 @@ export function ProtoTableView({ data }: { data: string }) {
   )
 }
 
-const ProtoTableRows = ({
-  data,
-  parentKey = "",
-  level = 0,
-}: { data: ProtoField; parentKey?: string; level?: number }) => {
+const ProtoTableRows = ({ fields, parentKey = "", level = 0 }: { fields: DecodedField[]; parentKey?: string; level?: number }) => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({})
-
-  if (!data || !data.value) return null
-
-  const toggleExpand = (key: string) => {
-    setExpandedItems((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }))
-  }
-
-  if (data.type === "message") {
-    return (
-      <>
-        {Object.entries(data.value).map(([key, val]: [string, ProtoField], index) => {
-          const fullKey = parentKey ? `${parentKey}.${key}` : key
-          const isExpandable = isMessageOrRepeated(val)
-          const isExpanded = expandedItems[fullKey] !== false // Default to expanded
-
-          return (
+  if (!fields) return null
+  return (
+    <>
+      {fields.map((field, idx) => {
+        const key = field.message || String(field.fieldNumber ?? idx)
+        const fullKey = parentKey ? `${parentKey}.${key}` : key
+        const isExpandable = isMessageOrRepeated(field)
+        const isExpanded = expandedItems[fullKey] !== false
+        return (
+          <React.Fragment key={fullKey}>
             <tr
-              key={fullKey}
               className={cn(
                 "border-b border-gray-700/50 hover:bg-[#3a3a3a]",
-                index % 2 === 0 ? "bg-[#2a2a2a]" : "bg-[#303134]",
+                idx % 2 === 0 ? "bg-[#2a2a2a]" : "bg-[#303134]",
               )}
             >
               <td className="py-2 px-4 font-medium">
                 <div className="flex items-center" style={{ paddingLeft: `${level * 16}px` }}>
                   {isExpandable ? (
-                    <button onClick={() => toggleExpand(fullKey)} className="mr-2 focus:outline-none">
+                    <button onClick={() => setExpandedItems((prev) => ({ ...prev, [fullKey]: !isExpanded }))} className="mr-2 focus:outline-none">
                       {isExpanded ? (
                         <ChevronDown className="h-4 w-4 text-gray-400" />
                       ) : (
@@ -86,33 +78,25 @@ const ProtoTableRows = ({
                   <span className="text-gray-300">{key}</span>
                 </div>
               </td>
-              <td className="py-2 px-4 text-gray-400">{val.type}</td>
+              <td className="py-2 px-4 text-gray-400">{field.type}</td>
               <td className="py-2 px-4">
                 {!isExpandable ? (
-                  <ValueDisplay field={val} />
+                  <ValueDisplay field={field} />
                 ) : (
                   <span className="text-gray-400">
-                    {val.type === "repeated_message" || val.type === "repeated_string"
-                      ? `${Array.isArray(val.value) ? val.value.length : 0} items`
+                    {field.type.startsWith("repeated_")
+                      ? `${Array.isArray(field.value) ? field.value.length : 0} items`
                       : "Object"}
                   </span>
                 )}
               </td>
             </tr>
-          )
-        })}
-        {Object.entries(data.value).map(([key, val]: [string, ProtoField]) => {
-          const fullKey = parentKey ? `${parentKey}.${key}` : key
-          const isExpandable = isMessageOrRepeated(val)
-          const isExpanded = expandedItems[fullKey] !== false
-
-          if (isExpandable && isExpanded) {
-            if (val.type === "repeated_message") {
-              return (
-                <tr key={`${fullKey}-expanded`} className="border-b border-gray-700/50">
-                  <td colSpan={3} className="p-0">
-                    <div className="pl-4">
-                      {val.value.map((item: ProtoField, index: number) => (
+            {isExpandable && isExpanded && (
+              <tr key={`${fullKey}-expanded`} className="border-b border-gray-700/50">
+                <td colSpan={3} className="p-0">
+                  <div className="pl-4">
+                    {field.type === "repeated_message" && Array.isArray(field.value) && (
+                      (field.value as DecodedField[]).map((item, index) => (
                         <table key={index} className="w-full border-l-2 border-blue-500/30 ml-4 my-2">
                           <thead>
                             <tr className="bg-[#202124] text-gray-300 text-sm">
@@ -127,57 +111,44 @@ const ProtoTableRows = ({
                             </tr>
                           </thead>
                           <tbody>
-                            <ProtoTableRows data={item} level={level + 1} parentKey={`${fullKey}[${index}]`} />
+                            <ProtoTableRows fields={item.value as DecodedField[]} level={level + 1} parentKey={`${fullKey}[${index}]`} />
                           </tbody>
                         </table>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              )
-            } else if (val.type === "repeated_string") {
-              return (
-                <tr key={`${fullKey}-expanded`} className="border-b border-gray-700/50">
-                  <td colSpan={3} className="py-2 px-4">
-                    <div className="pl-8 border-l-2 border-blue-500/30 ml-4">
-                      <div className="bg-[#2a2a2a] p-2 rounded">
-                        {val.value.map((item: string, index: number) => (
-                          <div key={index} className="py-1">
-                            <span className="text-blue-400 mr-2">[{index}]</span>
-                            <span className="text-blue-400">"{item}"</span>
-                          </div>
-                        ))}
+                      ))
+                    )}
+                    {field.type === "repeated_string" && Array.isArray(field.value) && (
+                      <div className="pl-8 border-l-2 border-blue-500/30 ml-4">
+                        <div className="bg-[#2a2a2a] p-2 rounded">
+                          {Array.isArray(field.value) && field.value.every(v => typeof v === "string") &&
+                            field.value.map((item, index) => (
+                              <div key={index} className="py-1">
+                                <span className="text-blue-400 mr-2">[{index}]</span>
+                                <span className="text-blue-400">"{item}"</span>
+                              </div>
+                            ))}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              )
-            } else if (val.type === "message") {
-              return (
-                <tr key={`${fullKey}-expanded`} className="border-b border-gray-700/50">
-                  <td colSpan={3} className="p-0">
-                    <table className="w-full border-l-2 border-blue-500/30 ml-4 my-2">
-                      <tbody>
-                        <ProtoTableRows data={val} level={level + 1} parentKey={fullKey} />
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              )
-            }
-          }
-          return null
-        })}
-      </>
-    )
-  }
-
-  return null
+                    )}
+                    {field.type === "message" && Array.isArray(field.value) && (
+                      <table className="w-full border-l-2 border-blue-500/30 ml-4 my-2">
+                        <tbody>
+                          <ProtoTableRows fields={field.value as DecodedField[]} level={level + 1} parentKey={fullKey} />
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            )}
+          </React.Fragment>
+        )
+      })}
+    </>
+  )
 }
 
-const ValueDisplay = ({ field }: { field: ProtoField }) => {
+const ValueDisplay = ({ field }: { field: DecodedField }) => {
   if (!field) return null
-
   return (
     <span
       className={cn({
@@ -196,12 +167,11 @@ const ValueDisplay = ({ field }: { field: ProtoField }) => {
           ? field.value
             ? "true"
             : "false"
-          : field.value.toString()}
+          : field.value?.toString?.() ?? String(field.value)}
     </span>
   )
 }
 
-// Helper function to check if a field is a message or repeated type
-function isMessageOrRepeated(field: ProtoField): boolean {
-  return field.type === "message" || field.type === "repeated_message" || field.type === "repeated_string"
+function isMessageOrRepeated(field: DecodedField): boolean {
+  return field.type === "message" || field.type.startsWith("repeated_")
 }

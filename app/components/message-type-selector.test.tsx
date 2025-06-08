@@ -3,23 +3,23 @@ import { ProtoByteTable } from '@/app/components/proto-byte-table';
 import '@testing-library/jest-dom';
 
 describe('ProtoByteTable', () => {
-  const sampleData = JSON.stringify({
-    message: 'Person',
-    fields: {
-      name: {
-        type: 'string',
-        value: 'John Doe'
-      },
-      id: {
-        type: 'int32',
-        value: 123
-      },
-      email: {
-        type: 'string',
-        value: 'john@example.com'
-      }
+  const sampleData = JSON.stringify([
+    {
+      type: 'string',
+      value: 'John Doe',
+      fieldNumber: 1,
+    },
+    {
+      type: 'int32',
+      value: '123',
+      fieldNumber: 2,
+    },
+    {
+      type: 'string',
+      value: 'john@example.com',
+      fieldNumber: 3,
     }
-  });
+  ]);
 
   test('renders the table with headers', () => {
     render(<ProtoByteTable data={sampleData} />);
@@ -49,17 +49,6 @@ describe('ProtoByteTable', () => {
     render(<ProtoByteTable data={sampleData} />);
 
     // Use more flexible text matching for fields
-    const fields = ['name', 'id', 'email'];
-    fields.forEach(field => {
-      expect(
-        screen.getByText(content =>
-          content.includes(field),
-          { exact: false }
-        )
-      ).toBeInTheDocument();
-    });
-
-    // Use more flexible text matching for values
     const values = ['John Doe', '123', 'john@example.com'];
     values.forEach(value => {
       expect(

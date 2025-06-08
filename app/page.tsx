@@ -14,7 +14,7 @@ import { ProtoByteTable } from "./components/proto-byte-table"
 import { Header } from "./components/header"
 import { ProtoFileSelector } from "./components/proto-file-selector"
 import { MessageTypeSelector } from "./components/message-type-selector"
-import { ProtobufDecoder, parseProtobufInput } from "./utils/protobuf-decoder"
+import { DecodedField, ProtobufDecoder, parseProtobufInput } from "./utils/protobuf-decoder"
 
 export default function Home() {
   const [protobufBytes, setProtobufBytes] = useState("")
@@ -73,7 +73,7 @@ export default function Home() {
           .join(" "),
       )
 
-      let decodedResult
+      let decodedResult: DecodedField[];
 
       if (protoFiles.length > 0 && selectedMessageType) {
         // Decode with schema
@@ -83,7 +83,9 @@ export default function Home() {
       } else {
         // Decode without schema
         console.log("Decoding without schema")
-        decodedResult = await decoderRef.current.decodeWithoutSchema(bytes)
+        // decodedResult = await decoderRef.current.decodeWithoutSchema(bytes)
+        decodedResult = decoderRef.current.decodeWithoutSchema(bytes);
+        console.log(decodedResult);
         setInfo("Successfully decoded without schema (field names are numbers)")
       }
 
@@ -115,7 +117,7 @@ export default function Home() {
     const samples = {
       simple: "ChVTaW1wbGUgUGVyc29uIG1lc3NhZ2U=",
       repeated:
-        "ChxNZXNzYWdlIHdpdGggcmVwZWF0ZWQgZmllbGRzEkEKB015IFRhZ3MSCEpvaG4gRG9lGglpbXBvcnRhbnQaBHdvcmsaCHBlcnNvbmFsGgZ1cmdlbnQaCWZvbGxvdy11cA==",
+        "CgxTb21lIG51bWJlcnMSFwoDb25lCgN0d28KBXRocmVlCgRmb3Vy",
       complex:
         "0a2e0a084a6f686e20446f6510d20912106a6f686e406578616d706c652e636f6d1a0a0a08353535343332311001220a0a08353535313233341000",
     }
