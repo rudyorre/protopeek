@@ -10,22 +10,22 @@ describe('ProtoByteTable', () => {
       type: 'string',
       value: 'John Doe',
       wireType: undefined,
-      byteRange: [0, 8]
+      byteRange: [0, 8],
     },
     {
       fieldNumber: 2,
       type: 'int32',
       value: '123',
       wireType: undefined,
-      byteRange: [8, 12]
+      byteRange: [8, 12],
     },
     {
       fieldNumber: 3,
       type: 'string',
       value: 'john@example.com',
       wireType: undefined,
-      byteRange: [12, 28]
-    }
+      byteRange: [12, 28],
+    },
   ]);
 
   test('renders the table with headers', () => {
@@ -41,7 +41,7 @@ describe('ProtoByteTable', () => {
 
     // Check for specific headers
     const commonHeaders = ['Byte Range', 'Field Number', 'Type', 'Content'];
-    commonHeaders.forEach(header => {
+    commonHeaders.forEach((header) => {
       expect(screen.getByText(header, { exact: false })).toBeInTheDocument();
     });
   });
@@ -50,15 +50,19 @@ describe('ProtoByteTable', () => {
     render(<ProtoByteTable data={sampleData} />);
 
     // Check for field numbers and types
-    ['1', '2', '3'].forEach(num => {
-      expect(screen.getAllByText(num, { exact: false }).length).toBeGreaterThan(0);
+    ['1', '2', '3'].forEach((num) => {
+      expect(screen.getAllByText(num, { exact: false }).length).toBeGreaterThan(
+        0
+      );
     });
-    ['string', 'int32'].forEach(type => {
-      expect(screen.getAllByText(type, { exact: false }).length).toBeGreaterThan(0);
+    ['string', 'int32'].forEach((type) => {
+      expect(
+        screen.getAllByText(type, { exact: false }).length
+      ).toBeGreaterThan(0);
     });
 
     // Check for string values
-    ['John Doe', '123', 'john@example.com'].forEach(value => {
+    ['John Doe', '123', 'john@example.com'].forEach((value) => {
       expect(screen.getByText(value, { exact: false })).toBeInTheDocument();
     });
   });

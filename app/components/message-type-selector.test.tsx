@@ -18,7 +18,7 @@ describe('ProtoByteTable', () => {
       type: 'string',
       value: 'john@example.com',
       fieldNumber: 3,
-    }
+    },
   ]);
 
   test('renders the table with headers', () => {
@@ -34,8 +34,9 @@ describe('ProtoByteTable', () => {
 
     // Alternative approach: check for specific headers that we know exist
     const commonHeaders = ['Field', 'Type', 'Value'];
-    commonHeaders.forEach(header => {
-      const element = screen.queryByText(header) ||
+    commonHeaders.forEach((header) => {
+      const element =
+        screen.queryByText(header) ||
         screen.queryByText(header, { exact: false }) ||
         screen.queryByText(new RegExp(header, 'i'));
 
@@ -50,12 +51,9 @@ describe('ProtoByteTable', () => {
 
     // Use more flexible text matching for fields
     const values = ['John Doe', '123', 'john@example.com'];
-    values.forEach(value => {
+    values.forEach((value) => {
       expect(
-        screen.getByText(content =>
-          content.includes(value),
-          { exact: false }
-        )
+        screen.getByText((content) => content.includes(value), { exact: false })
       ).toBeInTheDocument();
     });
   });
