@@ -148,7 +148,7 @@ export default function Home() {
       simple: 'ChVTaW1wbGUgUGVyc29uIG1lc3NhZ2U=',
       repeated: 'CgxTb21lIG51bWJlcnMSFwoDb25lCgN0d28KBXRocmVlCgRmb3Vy',
       complex:
-        '0a2e0a084a6f686e20446f6510d20912106a6f686e406578616d706c652e636f6d1a0a0a08353535343332311001220a0a08353535313233341000',
+        'CghKb2huIERvZRDSCRoQam9obkBleGFtcGxlLmNvbSILCgc1NTU0MzIxEAEiCwoHNTU1MTIzNBAA',
     };
     setProtobufBytes(samples[type]);
   };
