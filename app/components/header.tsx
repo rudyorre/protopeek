@@ -1,5 +1,6 @@
 import { Code, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { VersionBadge } from './version-badge';
 
 export function Header() {
   return (
@@ -26,7 +27,8 @@ export function Header() {
             </div>
           </div>
 
-          <div className='hidden items-center gap-4 md:flex'>
+          <div className='flex items-center gap-4'>
+            <VersionBadge />
             <Button
               variant='outline'
               size='sm'
