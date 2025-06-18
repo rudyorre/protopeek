@@ -2,44 +2,10 @@
 
 import Link from 'next/link';
 import { Info, Shield, BookOpen, Github, GitBranch } from 'lucide-react';
-import { useState, useEffect } from 'react';
-
-interface GitHubRelease {
-  tag_name: string;
-  html_url: string;
-}
+import { useGitHubRelease } from '../hooks/use-github-release';
 
 function FooterVersion() {
-  const [version, setVersion] = useState<string | null>(null);
-  const [releaseUrl, setReleaseUrl] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchLatestRelease = async () => {
-      try {
-        const response = await fetch(
-          'https://api.github.com/repos/rudyorre/protopeek/releases/latest'
-        );
-        
-        if (response.ok) {
-          const release: GitHubRelease = await response.json();
-          setVersion(release.tag_name);
-          setReleaseUrl(release.html_url);
-        } else {
-          // Fallback to releases page if no releases exist yet
-          setReleaseUrl('https://github.com/rudyorre/protopeek/releases');
-        }
-      } catch (error) {
-        console.error('Failed to fetch latest release:', error);
-        // Fallback to releases page
-        setReleaseUrl('https://github.com/rudyorre/protopeek/releases');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchLatestRelease();
-  }, []);
+  const { version, releaseUrl, isLoading } = useGitHubRelease();
 
   if (isLoading) {
     return (

@@ -63,7 +63,7 @@ export function BlogPost({
           </div>
           
           {/* Main Content */}
-          <div className='flex-1 max-w-4xl animate-fade-in-up'>
+          <div className='flex-1 max-w-4xl'>
             {/* Mobile Navigation Button */}
             <div className='mb-6 lg:hidden'>
               <MobileNavigation />

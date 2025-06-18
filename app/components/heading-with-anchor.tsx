@@ -1,7 +1,7 @@
 'use client';
 
 import { Link } from 'lucide-react';
-import { ReactNode, useEffect, useState, createElement } from 'react';
+import { ReactNode, useMemo, createElement } from 'react';
 
 interface HeadingWithAnchorProps {
   level: 1 | 2 | 3 | 4 | 5 | 6;
@@ -10,18 +10,15 @@ interface HeadingWithAnchorProps {
 }
 
 export function HeadingWithAnchor({ level, children, className = '' }: HeadingWithAnchorProps) {
-  const [id, setId] = useState('');
-
-  useEffect(() => {
-    // Generate slug from children text
+  // Memoize the ID generation to prevent unnecessary re-computations
+  const id = useMemo(() => {
     const text = typeof children === 'string' ? children : extractTextFromChildren(children);
-    const slug = text
+    return text
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
       .replace(/\s+/g, '-') // Replace spaces with hyphens
       .replace(/-+/g, '-') // Replace multiple hyphens with single
       .trim();
-    setId(slug);
   }, [children]);
 
   const headingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -39,6 +36,12 @@ export function HeadingWithAnchor({ level, children, className = '' }: HeadingWi
     }
   };
 
+  // Memoize the link label to prevent recalculation
+  const linkLabel = useMemo(() => {
+    const text = typeof children === 'string' ? children : extractTextFromChildren(children);
+    return `Link to section: ${text}`;
+  }, [children]);
+
   return createElement(
     headingTag,
     {
@@ -54,7 +57,7 @@ export function HeadingWithAnchor({ level, children, className = '' }: HeadingWi
         {
           href: `#${id}`,
           className: 'opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100',
-          'aria-label': `Link to section: ${typeof children === 'string' ? children : extractTextFromChildren(children)}`
+          'aria-label': linkLabel
         },
         createElement(Link, { className: 'h-4 w-4 text-gray-400 hover:text-blue-400' })
       )

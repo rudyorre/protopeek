@@ -1,6 +1,7 @@
 import { Code, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { VersionBadge } from './version-badge';
+import Link from 'next/link';
 
 export function Header() {
   return (
@@ -8,23 +9,29 @@ export function Header() {
       <div className='container mx-auto px-4'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-2'>
-            <div className='rounded-full bg-blue-500 p-2'>
-              <Code className='h-5 w-5 text-white' />
-            </div>
-            <div>
-              <h1 className='text-title-large font-medium text-white tracking-tight'>ProtoPeek</h1>
-              <div className='hidden text-label-medium text-gray-400 sm:block font-normal'>
-                by{' '}
-                <a
-                  href='https://rudyorre.com'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-blue-400 hover:underline font-medium'
-                >
-                  Rudy Orre
-                </a>
+            <Link href="/" className='flex items-center gap-2 hover:opacity-80 transition-opacity duration-200'>
+              <img 
+                src="/logo.svg" 
+                alt="ProtoPeek Logo" 
+                className="h-8 w-8"
+              />
+              <div>
+                <h1 className='text-title-large font-medium text-white tracking-tight'>ProtoPeek</h1>
+                <div className='hidden text-label-medium text-gray-400 sm:block font-normal'>
+                  by{' '}
+                  <span 
+                    className='text-blue-400 font-medium cursor-pointer hover:underline'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open('https://rudyorre.com', '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    Rudy Orre
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           <div className='flex items-center gap-3'>
