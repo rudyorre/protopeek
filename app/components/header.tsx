@@ -27,23 +27,17 @@ export function Header() {
             </div>
           </div>
 
-          <div className='flex items-center gap-4'>
+          <div className='flex items-center gap-3'>
             <VersionBadge />
-            <Button
-              variant='outline'
-              size='sm'
-              className='border-gray-700 bg-[#303134] text-gray-200 hover:border-blue-500 hover:bg-[#303134]'
-              asChild
+            <a
+              href='https://github.com/rudyorre/protopeek'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-gray-400 transition-colors hover:text-gray-200'
+              aria-label='View on GitHub'
             >
-              <a
-                href='https://github.com/rudyorre/protopeek'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <Github className='mr-2 h-4 w-4' />
-                View on GitHub
-              </a>
-            </Button>
+              <Github className='h-5 w-5' />
+            </a>
           </div>
         </div>
       </div>
