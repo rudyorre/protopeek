@@ -168,31 +168,16 @@ export default function Home() {
         </div>
 
         <Card className='border border-gray-800 bg-[#202124] shadow-lg'>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className='text-headline-small font-medium text-white'>Input Data</CardTitle>
-                <CardDescription className='text-body-large text-gray-400'>
-                  Paste your protobuf bytes to decode the data (base64 or hex)
-                </CardDescription>
-              </div>
-              <SampleDataTooltip onLoadSample={loadSampleData} />
-            </div>
-          </CardHeader>
-          <CardContent className='space-y-4'>
+          <CardContent className='space-y-4 pt-6'>
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
               {/* Left column: Protobuf Bytes */}
               <div>
-                <div className='flex items-center justify-between'>
-                  <div className='flex items-center gap-2'>
-                    <Label
-                      htmlFor='protobufBytes'
-                      className='text-label-large font-medium'
-                    >
-                      Protobuf Bytes
-                    </Label>
-                  </div>
-                </div>
+                <Label
+                  htmlFor='protobufBytes'
+                  className='text-label-large font-medium'
+                >
+                  Protobuf Bytes
+                </Label>
                 <Textarea
                   id='protobufBytes'
                   placeholder='Paste your protobuf bytes here (base64: CgtIZWxsbyBXb3JsZA== or hex: 0a0b48656c6c6f20576f726c64)'
@@ -201,18 +186,16 @@ export default function Home() {
                   onChange={(e) => setProtobufBytes(e.target.value)}
                 />
                 <p className='mt-1 text-label-medium text-gray-400'>
-                  Enter hex, base64, or comma-separated bytes
+                  Enter hex, base64, or <SampleDataTooltip onLoadSample={loadSampleData} trigger="link" />
                 </p>
               </div>
 
               {/* Right column: Proto File Selection */}
-              <div>
-                <div className='flex-1'>
-                  <ProtoFileSelector
-                    onFilesSelected={handleProtoFilesSelected}
-                    selectedFiles={protoFiles}
-                  />
-                </div>
+              <div className='flex flex-col'>
+                <ProtoFileSelector
+                  onFilesSelected={handleProtoFilesSelected}
+                  selectedFiles={protoFiles}
+                />
 
                 {availableMessageTypes.length > 0 && (
                   <div className='mt-2'>

@@ -226,24 +226,8 @@ export function ProtoFileSelector({
   };
 
   return (
-    <div className='space-y-2'>
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-2'>
-          <Label className='text-label-large font-medium'>Proto Files</Label>
-          <span className='text-label-medium text-gray-400'>(Optional)</span>
-        </div>
-        {selectedFiles.length > 0 && (
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={clearAllFiles}
-            className='h-6 px-2 py-0 text-gray-400 hover:text-red-400'
-          >
-            Clear All
-          </Button>
-        )}
-      </div>
-
+    <div>
+      <Label className='text-label-large font-medium'>Proto Files</Label>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild>
           <Button
@@ -252,7 +236,7 @@ export function ProtoFileSelector({
               console.log('Button clicked, opening modal');
               setIsModalOpen(true);
             }}
-            className='flex h-[85px] w-full flex-col gap-1 border-dashed border-gray-700 bg-[#303134] hover:border-blue-500 hover:bg-[#303134]'
+            className='mt-2 flex h-[85px] w-full flex-col gap-1 border-dashed border-gray-700 bg-[#303134] hover:border-blue-500 hover:bg-[#303134]'
           >
             <FileUp className='h-5 w-5 text-blue-500' />
             <span className='text-body-medium'>
@@ -263,9 +247,6 @@ export function ProtoFileSelector({
           </Button>
         </DialogTrigger>
 
-        {/* </Dialog> */}
-
-        {/* Show a more compact indicator of selected files directly on the button instead of below */}
         {selectedFiles.length === 0 && (
           <p className='mt-1 text-label-medium text-gray-400'>
             Without proto files, field names will be replaced with field numbers
@@ -273,7 +254,7 @@ export function ProtoFileSelector({
         )}
 
         {selectedFiles.length > 0 && (
-          <div className='mt-2'>
+          <div className='mt-1'>
             <div className='flex items-center justify-between'>
               <div className='text-label-medium text-gray-400'>
                 Selected files ({selectedFiles.length}):
@@ -287,8 +268,6 @@ export function ProtoFileSelector({
                 View all
               </Button>
             </div>
-
-            {/* Show first file with ellipsis if there are more */}
             <div className='mt-1 flex items-center justify-between rounded bg-[#3a3a3a] px-2 py-1 text-label-medium'>
               <span className='max-w-[200px] truncate font-mono text-gray-300'>
                 {selectedFiles[0].path}
