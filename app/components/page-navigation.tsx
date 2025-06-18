@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, Info, Shield, BookOpen, FileText } from 'lucide-react';
+import { ArrowLeft, Info, Shield, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavigationItem {
@@ -19,27 +19,21 @@ interface NavigationSection {
 
 const navigationItems: NavigationSection[] = [
   {
-    title: 'Technical',
+    title: 'Guides',
     items: [
       {
         name: 'How to Use',
         href: '/tutorial',
         icon: BookOpen,
         description: 'Complete tutorial guide'
-      },
-      {
-        name: 'Blog',
-        href: '/blog',
-        icon: FileText,
-        description: 'Technical articles & tips'
       }
     ]
   },
   {
-    title: 'Company',
+    title: 'About',
     items: [
       {
-        name: 'About',
+        name: 'Mission',
         href: '/about',
         icon: Info,
         description: 'Mission and motivation'

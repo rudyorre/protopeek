@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ArrowLeft, Info, Shield, BookOpen, FileText } from 'lucide-react';
+import { Menu, X, ArrowLeft, Info, Shield, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -22,27 +22,21 @@ interface NavigationSection {
 
 const navigationItems: NavigationSection[] = [
   {
-    title: 'Technical',
+    title: 'Guides',
     items: [
       {
         name: 'How to Use',
         href: '/tutorial',
         icon: BookOpen,
         description: 'Complete tutorial guide'
-      },
-      {
-        name: 'Blog',
-        href: '/blog',
-        icon: FileText,
-        description: 'Technical articles & tips'
       }
     ]
   },
   {
-    title: 'Company',
+    title: 'About',
     items: [
       {
-        name: 'About',
+        name: 'Mission',
         href: '/about',
         icon: Info,
         description: 'Mission and motivation'
@@ -87,7 +81,7 @@ export function MobileNavigation() {
         <div className="space-y-6">
           {navigationItems.map((section) => (
             <div key={section.title} className="mb-6">
-              <h3 className="mb-3 text-sm font-semibold text-gray-400 tracking-wider">
+              <h3 className="mb-3 text-sm font-semibold text-gray-400I  tracking-wider">
                 {section.title}
               </h3>
               <ul className="space-y-1">
