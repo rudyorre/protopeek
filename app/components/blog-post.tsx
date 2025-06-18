@@ -40,14 +40,14 @@ export function BlogPost({
             
             {/* Article Header */}
             <article className='mb-8'>
-              <header className='mb-8 text-center'>
+              <header className='mb-8'>
                 <h1 className='mb-4 text-4xl font-bold text-white'>{title}</h1>
                 {description && (
                   <p className='mb-6 text-xl text-gray-400'>{description}</p>
                 )}
                 
                 {/* Meta information */}
-                <div className='flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500'>
+                <div className='flex flex-wrap items-center gap-4 text-sm text-gray-500'>
                   {author && (
                     <div className='flex items-center gap-1'>
                       <User className='h-4 w-4' />
