@@ -1,5 +1,6 @@
 import type React from 'react';
 import '@/app/globals.css';
+import '@/app/selection-styles.css';
 import { Roboto } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/app/components/footer';

@@ -37,4 +37,15 @@
       'rlig' 1,
       'calt' 1;
   }
+  
+  /* Custom text selection styling */
+  ::selection {
+    background-color: rgb(37 99 235 / 0.6); /* blue-600 with 60% opacity - more vibrant */
+    color: rgb(255 255 255); /* white text for contrast */
+  }
+  
+  ::-moz-selection {
+    background-color: rgb(37 99 235 / 0.6); /* blue-600 with 60% opacity - more vibrant */
+    color: rgb(255 255 255); /* white text for contrast */
+  }
 }
