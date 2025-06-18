@@ -9,14 +9,14 @@ export default function PrivacyPage() {
       date="January 2025"
       readTime="6 min read"
     >
-      <div className='space-y-8 text-gray-300'>
+      <div className='space-y-8 text-body-large text-gray-300'>
         {/* Key Point - Everything Local */}
         <div className='rounded-lg border border-green-700 bg-green-900/20 p-6'>
           <div className='flex items-center gap-3 mb-4'>
             <Shield className='h-6 w-6 text-green-400' />
-            <h2 className='text-xl font-semibold text-green-400'>100% Local Processing</h2>
+            <h2 className='text-title-large font-semibold text-green-400'>100% Local Processing</h2>
           </div>
-          <p className='text-lg leading-relaxed text-green-100'>
+          <p className='text-title-medium leading-relaxed text-green-100'>
             <strong>Everything happens in your browser.</strong> Your protobuf data, .proto files, 
             and any other information you provide never leave your device. There are no servers 
             processing your data, no databases storing your information, and no third parties 
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         <section>
           <div className='flex items-center gap-3 mb-4'>
             <Eye className='h-5 w-5 text-blue-400' />
-            <h2 className='text-2xl font-semibold text-white'>What We Don't Collect</h2>
+            <h2 className='text-headline-medium text-white'>What We Don't Collect</h2>
           </div>
           <div className='space-y-3'>
             <ul className='list-disc space-y-2 pl-6'>
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
         <section>
           <div className='flex items-center gap-3 mb-4'>
             <Server className='h-5 w-5 text-purple-400' />
-            <h2 className='text-2xl font-semibold text-white'>How It Works</h2>
+            <h2 className='text-headline-medium text-white'>How It Works</h2>
           </div>
           <div className='space-y-4'>
             <p className='leading-relaxed'>
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
         <section>
           <div className='flex items-center gap-3 mb-4'>
             <Code className='h-5 w-5 text-green-400' />
-            <h2 className='text-2xl font-semibold text-white'>Open Source Transparency</h2>
+            <h2 className='text-headline-medium text-white'>Open Source Transparency</h2>
           </div>
           <div className='space-y-4'>
             <p className='leading-relaxed'>
@@ -92,7 +92,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Browser Storage</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Browser Storage</h2>
           <p className='leading-relaxed'>
             ProtoPeek may use your browser's local storage to save user preferences 
             (such as theme settings or recent file selections) for a better user experience. 
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Third-Party Services</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Third-Party Services</h2>
           <p className='leading-relaxed'>
             This website is hosted on standard web hosting services, but no user data 
             is processed or stored by these services. The only information these services 
@@ -111,7 +111,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Updates to This Policy</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Updates to This Policy</h2>
           <p className='leading-relaxed'>
             If we ever make changes to our privacy practices, we will update this policy 
             and note the changes in our GitHub repository. However, our core commitment 
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Questions?</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Questions?</h2>
           <p className='leading-relaxed'>
             If you have any questions about privacy or how ProtoPeek works, please feel 
             free to{' '}
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        <div className='border-t border-gray-700 pt-6 text-sm text-gray-400'>
+        <div className='border-t border-gray-700 pt-6 text-label-large text-gray-400'>
           <p>Last updated: January 2025</p>
         </div>
       </div>

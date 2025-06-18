@@ -9,9 +9,9 @@ export default function TutorialPage() {
       date="January 2025"
       readTime="8 min read"
     >
-      <div className='space-y-8 text-gray-300'>
+      <div className='space-y-8 text-body-large text-gray-300'>
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Getting Started</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Getting Started</h2>
           <p className='leading-relaxed'>
             ProtoPeek is designed to be intuitive and powerful. Whether you're debugging 
             protobuf messages, exploring API responses, or learning about Protocol Buffers, 
@@ -20,13 +20,13 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-6 text-2xl font-semibold text-white'>Step-by-Step Tutorial</h2>
+          <h2 className='mb-6 text-headline-medium text-white'>Step-by-Step Tutorial</h2>
           
           {/* Step 1 */}
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-semibold'>1</div>
-              <h3 className='text-xl font-semibold text-white'>Input Your Protobuf Data</h3>
+              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>1</div>
+              <h3 className='text-title-large text-white'>Input Your Protobuf Data</h3>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -48,8 +48,8 @@ export default function TutorialPage() {
           {/* Step 2 */}
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-semibold'>2</div>
-              <h3 className='text-xl font-semibold text-white'>Upload Proto Files (Optional but Recommended)</h3>
+              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>2</div>
+              <h3 className='text-title-large text-white'>Upload Proto Files (Optional but Recommended)</h3>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -73,8 +73,8 @@ export default function TutorialPage() {
           {/* Step 3 */}
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-semibold'>3</div>
-              <h3 className='text-xl font-semibold text-white'>Select Message Type</h3>
+              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>3</div>
+              <h3 className='text-title-large text-white'>Select Message Type</h3>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -92,8 +92,8 @@ export default function TutorialPage() {
           {/* Step 4 */}
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-semibold'>4</div>
-              <h3 className='text-xl font-semibold text-white'>Decode and Explore</h3>
+              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>4</div>
+              <h3 className='text-title-large text-white'>Decode and Explore</h3>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -103,30 +103,30 @@ export default function TutorialPage() {
                 <div className='rounded border border-gray-600 bg-[#252529] p-4'>
                   <div className='flex items-center gap-2 mb-2'>
                     <Search className='h-4 w-4 text-blue-400' />
-                    <strong className='text-white'>Tree View</strong>
+                    <strong className='text-label-large text-white'>Tree View</strong>
                   </div>
-                  <p className='text-sm'>Interactive tree structure showing nested fields and values</p>
+                  <p className='text-body-medium'>Interactive tree structure showing nested fields and values</p>
                 </div>
                 <div className='rounded border border-gray-600 bg-[#252529] p-4'>
                   <div className='flex items-center gap-2 mb-2'>
                     <FileText className='h-4 w-4 text-green-400' />
-                    <strong className='text-white'>Byte Table</strong>
+                    <strong className='text-label-large text-white'>Byte Table</strong>
                   </div>
-                  <p className='text-sm'>Detailed byte-by-byte analysis of the encoding</p>
+                  <p className='text-body-medium'>Detailed byte-by-byte analysis of the encoding</p>
                 </div>
                 <div className='rounded border border-gray-600 bg-[#252529] p-4'>
                   <div className='flex items-center gap-2 mb-2'>
                     <Code2 className='h-4 w-4 text-purple-400' />
-                    <strong className='text-white'>Proto Structure</strong>
+                    <strong className='text-label-large text-white'>Proto Structure</strong>
                   </div>
-                  <p className='text-sm'>View your uploaded .proto files (when available)</p>
+                  <p className='text-body-medium'>View your uploaded .proto files (when available)</p>
                 </div>
                 <div className='rounded border border-gray-600 bg-[#252529] p-4'>
                   <div className='flex items-center gap-2 mb-2'>
                     <Download className='h-4 w-4 text-yellow-400' />
-                    <strong className='text-white'>Raw JSON</strong>
+                    <strong className='text-label-large text-white'>Raw JSON</strong>
                   </div>
-                  <p className='text-sm'>Export the decoded data as JSON</p>
+                  <p className='text-body-medium'>Export the decoded data as JSON</p>
                 </div>
               </div>
             </div>
@@ -134,11 +134,11 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Understanding the Output</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Understanding the Output</h2>
           
           <div className='space-y-6'>
             <div>
-              <h3 className='mb-3 text-lg font-semibold text-white'>Tree View</h3>
+              <h3 className='mb-3 text-title-large text-white'>Tree View</h3>
               <p className='leading-relaxed'>
                 The tree view shows your protobuf data in a hierarchical structure. You can expand and collapse nested objects, 
                 making it easy to explore complex data structures. Field names, types, and values are clearly displayed.
@@ -146,7 +146,7 @@ export default function TutorialPage() {
             </div>
 
             <div>
-              <h3 className='mb-3 text-lg font-semibold text-white'>Byte Table</h3>
+              <h3 className='mb-3 text-title-large text-white'>Byte Table</h3>
               <p className='leading-relaxed'>
                 The byte table provides a detailed breakdown of how your data is encoded at the byte level. This is invaluable 
                 for understanding protobuf's binary format, debugging encoding issues, or learning about the protocol.
@@ -154,7 +154,7 @@ export default function TutorialPage() {
             </div>
 
             <div>
-              <h3 className='mb-3 text-lg font-semibold text-white'>Export Options</h3>
+              <h3 className='mb-3 text-title-large text-white'>Export Options</h3>
               <p className='leading-relaxed'>
                 Use the "Download JSON" button to export your decoded data for use in other tools or applications. 
                 The exported JSON maintains the structure and field names from your schema.
@@ -164,7 +164,7 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Privacy & Security</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Privacy & Security</h2>
           <div className='rounded-lg border border-green-700 bg-green-900/20 p-6'>
             <p className='leading-relaxed text-green-100'>
               <strong>🔒 Your data never leaves your browser.</strong> All decoding happens locally using JavaScript, 
@@ -174,7 +174,7 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Tips for Best Results</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Tips for Best Results</h2>
           <ul className='list-disc space-y-2 pl-6'>
             <li>Always upload your .proto files when available for the best decoding experience</li>
             <li>If you have multiple .proto files, upload them all - ProtoPeek will handle imports automatically</li>
@@ -185,7 +185,7 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Need Help?</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Need Help?</h2>
           <p className='leading-relaxed'>
             If you encounter any issues or have questions, feel free to{' '}
             <a 

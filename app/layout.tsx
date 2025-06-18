@@ -1,14 +1,18 @@
 import type React from 'react';
 import '@/app/globals.css';
-import '@/app/selection-styles.css';
-import { Roboto } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/app/components/footer';
 
-const roboto = Roboto({
-  weight: ['400', '500', '700'],
+// Inter with optimized settings for Material Design 3 typography
+// Configured for the best rendering quality and readability
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-roboto',
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal'],
+  preload: true,
 });
 
 export const metadata = {
@@ -23,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={`${roboto.variable} font-sans`}>
+      <body className={`${inter.variable} font-sans`}>
         <ThemeProvider
           attribute='class'
           defaultTheme='dark'

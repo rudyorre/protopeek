@@ -70,7 +70,7 @@ export function Footer() {
         <div className='flex flex-col space-y-6'>
           {/* Navigation Links - Left aligned with version on right */}
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-            <div className='flex flex-wrap items-center gap-4 sm:gap-6 text-sm'>
+            <div className='flex flex-wrap items-center gap-4 sm:gap-6 text-label-large'>
               <Link
                 href='/about'
                 className='flex items-center gap-2 text-gray-400 transition-colors hover:text-white'
@@ -110,7 +110,7 @@ export function Footer() {
           </div>
 
           {/* Bottom section with url and made with message on left */}
-          <div className='flex items-center text-sm text-gray-400'>
+          <div className='flex items-center text-body-medium text-gray-400'>
             <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4'>
               <a
                 href='https://protopeek.rudbase.com'

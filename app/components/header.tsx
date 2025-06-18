@@ -12,8 +12,8 @@ export function Header() {
               <Code className='h-5 w-5 text-white' />
             </div>
             <div>
-              <h1 className='text-xl font-medium text-white'>ProtoPeek</h1>
-              <div className='hidden text-xs text-gray-400 sm:block'>
+              <h1 className='text-title-large font-medium text-white'>ProtoPeek</h1>
+              <div className='hidden text-label-medium text-gray-400 sm:block'>
                 by{' '}
                 <a
                   href='https://rudyorre.com'

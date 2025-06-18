@@ -9,9 +9,9 @@ export default function AboutPage() {
       date="January 2025"
       readTime="4 min read"
     >
-      <div className='space-y-6 text-gray-300'>
+      <div className='space-y-6 text-body-large text-gray-300'>
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Our Mission</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Our Mission</h2>
           <p className='leading-relaxed'>
             ProtoPeek was born out of a simple frustration: existing online protobuf decoders 
             didn't make it easy to use <code className='rounded bg-gray-700 px-2 py-1 text-blue-400'>.proto</code> files 
@@ -22,7 +22,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Why We Built This</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Why We Built This</h2>
           <div className='space-y-4'>
             <p className='leading-relaxed'>
               When working with Protocol Buffers, having access to the schema dramatically 
@@ -40,7 +40,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Learning Journey</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Learning Journey</h2>
           <p className='leading-relaxed'>
             Building ProtoPeek was also a fantastic learning opportunity to dive deep into 
             the protobuf encoding and decoding patterns. Understanding how Protocol Buffers 
@@ -50,7 +50,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Special Thanks</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Special Thanks</h2>
           <div className='rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <p className='leading-relaxed'>
               We want to give special thanks to{' '}
@@ -71,7 +71,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-2xl font-semibold text-white'>Open Source</h2>
+          <h2 className='mb-4 text-headline-medium text-white'>Open Source</h2>
           <p className='leading-relaxed'>
             ProtoPeek is completely open source and available on{' '}
             <a 

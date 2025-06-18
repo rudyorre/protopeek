@@ -72,7 +72,7 @@ export function MobileNavigation() {
         <Link 
           href="/" 
           onClick={() => setIsOpen(false)}
-          className='flex items-center gap-2 mt-6 mb-6 text-sm text-gray-400 hover:text-blue-400 transition-colors'
+          className='flex items-center gap-2 mt-6 mb-6 text-label-large text-gray-400 hover:text-blue-400 transition-colors'
         >
           <ArrowLeft className='h-4 w-4' />
           Back to ProtoPeek
@@ -81,7 +81,7 @@ export function MobileNavigation() {
         <div className="space-y-6">
           {navigationItems.map((section) => (
             <div key={section.title} className="mb-6">
-              <h3 className="mb-3 text-sm font-semibold text-gray-400I  tracking-wider">
+              <h3 className="mb-3 text-label-medium text-gray-400 font-medium tracking-wider uppercase">
                 {section.title}
               </h3>
               <ul className="space-y-1">
@@ -95,7 +95,7 @@ export function MobileNavigation() {
                         href={item.href}
                         onClick={() => setIsOpen(false)}
                         className={cn(
-                          'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200',
+                          'group flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200',
                           isActive
                             ? 'bg-blue-600 text-white shadow-md'
                             : 'text-gray-400 hover:bg-[#303134] hover:text-white'
@@ -103,9 +103,9 @@ export function MobileNavigation() {
                       >
                         <Icon className='h-4 w-4 flex-shrink-0' />
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium">{item.name}</div>
+                          <div className="text-label-large font-medium">{item.name}</div>
                           <div className={cn(
-                            'text-xs transition-colors',
+                            'text-label-medium transition-colors',
                             isActive ? 'text-blue-100' : 'text-gray-500 group-hover:text-gray-400'
                           )}>
                             {item.description}
