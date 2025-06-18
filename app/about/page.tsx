@@ -1,11 +1,13 @@
-import { PageLayout } from '../components/page-layout';
+import { BlogPost } from '../components/blog-post';
 import { ExternalLink } from 'lucide-react';
 
 export default function AboutPage() {
   return (
-    <PageLayout
+    <BlogPost
       title="About ProtoPeek"
       description="Learn about the motivation and story behind ProtoPeek"
+      date="January 2025"
+      readTime="4 min read"
     >
       <div className='space-y-6 text-gray-300'>
         <section>
@@ -86,6 +88,6 @@ export default function AboutPage() {
           </p>
         </section>
       </div>
-    </PageLayout>
+    </BlogPost>
   );
 }

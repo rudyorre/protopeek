@@ -1,11 +1,13 @@
-import { PageLayout } from '../components/page-layout';
+import { BlogPost } from '../components/blog-post';
 import { Shield, Eye, Code, Server } from 'lucide-react';
 
 export default function PrivacyPage() {
   return (
-    <PageLayout
+    <BlogPost
       title="Privacy Policy"
       description="Your privacy and data security are our top priority"
+      date="January 2025"
+      readTime="6 min read"
     >
       <div className='space-y-8 text-gray-300'>
         {/* Key Point - Everything Local */}
@@ -138,6 +140,6 @@ export default function PrivacyPage() {
           <p>Last updated: January 2025</p>
         </div>
       </div>
-    </PageLayout>
+    </BlogPost>
   );
 }
