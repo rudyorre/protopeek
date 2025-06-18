@@ -88,7 +88,7 @@ export function PageNavigation() {
                       <div className='flex-1 min-w-0'>
                         <div className='text-label-large font-medium'>{item.name}</div>
                         <div className={cn(
-                          'text-label-medium transition-colors',
+                          'text-xs transition-colors',
                           isActive ? 'text-blue-100' : 'text-gray-500 group-hover:text-gray-400'
                         )}>
                           {item.description}

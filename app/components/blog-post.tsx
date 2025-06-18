@@ -1,7 +1,9 @@
+'use client';
+
 import { Header } from './header';
 import { PageNavigation } from './page-navigation';
 import { MobileNavigation } from './mobile-navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { Calendar, Clock, User } from 'lucide-react';
 
 interface BlogPostProps {
@@ -21,6 +23,34 @@ export function BlogPost({
   readTime,
   children 
 }: BlogPostProps) {
+  // Handle scrolling to anchor on page load
+  useEffect(() => {
+    const handleAnchorScroll = () => {
+      if (typeof window !== 'undefined' && window.location.hash) {
+        const hash = window.location.hash.slice(1);
+        setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 100);
+      }
+    };
+
+    // Handle initial load
+    handleAnchorScroll();
+
+    // Handle browser back/forward navigation
+    window.addEventListener('hashchange', handleAnchorScroll);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleAnchorScroll);
+    };
+  }, []);
+
   return (
     <>
       <Header />

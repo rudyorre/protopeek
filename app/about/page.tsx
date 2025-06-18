@@ -1,4 +1,5 @@
 import { BlogPost } from '../components/blog-post';
+import { HeadingWithAnchor } from '../components/heading-with-anchor';
 import { ExternalLink } from 'lucide-react';
 
 export default function AboutPage() {
@@ -11,7 +12,7 @@ export default function AboutPage() {
     >
       <div className='space-y-6 text-body-large text-gray-300'>
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Our Mission</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Our Mission</HeadingWithAnchor>
           <p className='leading-relaxed'>
             ProtoPeek was born out of a simple frustration: existing online protobuf decoders 
             didn't make it easy to use <code className='rounded bg-gray-700 px-2 py-1 text-blue-400'>.proto</code> files 
@@ -22,7 +23,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Why We Built This</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Why We Built This</HeadingWithAnchor>
           <div className='space-y-4'>
             <p className='leading-relaxed'>
               When working with Protocol Buffers, having access to the schema dramatically 
@@ -40,7 +41,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Learning Journey</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Learning Journey</HeadingWithAnchor>
           <p className='leading-relaxed'>
             Building ProtoPeek was also a fantastic learning opportunity to dive deep into 
             the protobuf encoding and decoding patterns. Understanding how Protocol Buffers 
@@ -50,7 +51,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Special Thanks</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Special Thanks</HeadingWithAnchor>
           <div className='rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <p className='leading-relaxed'>
               We want to give special thanks to{' '}
@@ -71,7 +72,7 @@ export default function AboutPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Open Source</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Open Source</HeadingWithAnchor>
           <p className='leading-relaxed'>
             ProtoPeek is completely open source and available on{' '}
             <a 

@@ -1,4 +1,5 @@
 import { BlogPost } from '../components/blog-post';
+import { HeadingWithAnchor } from '../components/heading-with-anchor';
 import { Shield, Eye, Code, Server } from 'lucide-react';
 
 export default function PrivacyPage() {
@@ -27,7 +28,7 @@ export default function PrivacyPage() {
         <section>
           <div className='flex items-center gap-3 mb-4'>
             <Eye className='h-5 w-5 text-blue-400' />
-            <h2 className='text-headline-medium text-white'>What We Don't Collect</h2>
+            <HeadingWithAnchor level={2}>What We Don't Collect</HeadingWithAnchor>
           </div>
           <div className='space-y-3'>
             <ul className='list-disc space-y-2 pl-6'>
@@ -44,7 +45,7 @@ export default function PrivacyPage() {
         <section>
           <div className='flex items-center gap-3 mb-4'>
             <Server className='h-5 w-5 text-purple-400' />
-            <h2 className='text-headline-medium text-white'>How It Works</h2>
+            <HeadingWithAnchor level={2}>How It Works</HeadingWithAnchor>
           </div>
           <div className='space-y-4'>
             <p className='leading-relaxed'>
@@ -64,7 +65,7 @@ export default function PrivacyPage() {
         <section>
           <div className='flex items-center gap-3 mb-4'>
             <Code className='h-5 w-5 text-green-400' />
-            <h2 className='text-headline-medium text-white'>Open Source Transparency</h2>
+            <HeadingWithAnchor level={2}>Open Source Transparency</HeadingWithAnchor>
           </div>
           <div className='space-y-4'>
             <p className='leading-relaxed'>
@@ -92,7 +93,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Browser Storage</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Browser Storage</HeadingWithAnchor>
           <p className='leading-relaxed'>
             ProtoPeek may use your browser's local storage to save user preferences 
             (such as theme settings or recent file selections) for a better user experience. 
@@ -101,7 +102,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Third-Party Services</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Third-Party Services</HeadingWithAnchor>
           <p className='leading-relaxed'>
             This website is hosted on standard web hosting services, but no user data 
             is processed or stored by these services. The only information these services 
@@ -111,7 +112,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Updates to This Policy</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Updates to This Policy</HeadingWithAnchor>
           <p className='leading-relaxed'>
             If we ever make changes to our privacy practices, we will update this policy 
             and note the changes in our GitHub repository. However, our core commitment 
@@ -120,7 +121,7 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Questions?</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Questions?</HeadingWithAnchor>
           <p className='leading-relaxed'>
             If you have any questions about privacy or how ProtoPeek works, please feel 
             free to{' '}

@@ -1,4 +1,5 @@
 import { BlogPost } from '../components/blog-post';
+import { HeadingWithAnchor } from '../components/heading-with-anchor';
 import { Upload, Play, Search, Download, Code2, FileText } from 'lucide-react';
 
 export default function TutorialPage() {
@@ -11,7 +12,7 @@ export default function TutorialPage() {
     >
       <div className='space-y-8 text-body-large text-gray-300'>
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Getting Started</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Getting Started</HeadingWithAnchor>
           <p className='leading-relaxed'>
             ProtoPeek is designed to be intuitive and powerful. Whether you're debugging 
             protobuf messages, exploring API responses, or learning about Protocol Buffers, 
@@ -20,13 +21,13 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-6 text-headline-medium text-white'>Step-by-Step Tutorial</h2>
+          <HeadingWithAnchor level={2} className='mb-6'>Step-by-Step Tutorial</HeadingWithAnchor>
           
           {/* Step 1 */}
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>1</div>
-              <h3 className='text-title-large text-white'>Input Your Protobuf Data</h3>
+              <HeadingWithAnchor level={3}>Input Your Protobuf Data</HeadingWithAnchor>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -49,7 +50,7 @@ export default function TutorialPage() {
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>2</div>
-              <h3 className='text-title-large text-white'>Upload Proto Files (Optional but Recommended)</h3>
+              <HeadingWithAnchor level={3}>Upload Proto Files (Optional but Recommended)</HeadingWithAnchor>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -74,7 +75,7 @@ export default function TutorialPage() {
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>3</div>
-              <h3 className='text-title-large text-white'>Select Message Type</h3>
+              <HeadingWithAnchor level={3}>Select Message Type</HeadingWithAnchor>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -93,7 +94,7 @@ export default function TutorialPage() {
           <div className='mb-8 rounded-lg border border-gray-700 bg-[#303134] p-6'>
             <div className='flex items-center gap-3 mb-4'>
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white text-label-large font-semibold'>4</div>
-              <h3 className='text-title-large text-white'>Decode and Explore</h3>
+              <HeadingWithAnchor level={3}>Decode and Explore</HeadingWithAnchor>
             </div>
             <div className='space-y-3'>
               <p className='leading-relaxed'>
@@ -134,11 +135,11 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Understanding the Output</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Understanding the Output</HeadingWithAnchor>
           
           <div className='space-y-6'>
             <div>
-              <h3 className='mb-3 text-title-large text-white'>Tree View</h3>
+              <HeadingWithAnchor level={3} className='mb-3'>Tree View</HeadingWithAnchor>
               <p className='leading-relaxed'>
                 The tree view shows your protobuf data in a hierarchical structure. You can expand and collapse nested objects, 
                 making it easy to explore complex data structures. Field names, types, and values are clearly displayed.
@@ -146,7 +147,7 @@ export default function TutorialPage() {
             </div>
 
             <div>
-              <h3 className='mb-3 text-title-large text-white'>Byte Table</h3>
+              <HeadingWithAnchor level={3} className='mb-3'>Byte Table</HeadingWithAnchor>
               <p className='leading-relaxed'>
                 The byte table provides a detailed breakdown of how your data is encoded at the byte level. This is invaluable 
                 for understanding protobuf's binary format, debugging encoding issues, or learning about the protocol.
@@ -154,7 +155,7 @@ export default function TutorialPage() {
             </div>
 
             <div>
-              <h3 className='mb-3 text-title-large text-white'>Export Options</h3>
+              <HeadingWithAnchor level={3} className='mb-3'>Export Options</HeadingWithAnchor>
               <p className='leading-relaxed'>
                 Use the "Download JSON" button to export your decoded data for use in other tools or applications. 
                 The exported JSON maintains the structure and field names from your schema.
@@ -164,7 +165,7 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Privacy & Security</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Privacy & Security</HeadingWithAnchor>
           <div className='rounded-lg border border-green-700 bg-green-900/20 p-6'>
             <p className='leading-relaxed text-green-100'>
               <strong>🔒 Your data never leaves your browser.</strong> All decoding happens locally using JavaScript, 
@@ -174,7 +175,7 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Tips for Best Results</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Tips for Best Results</HeadingWithAnchor>
           <ul className='list-disc space-y-2 pl-6'>
             <li>Always upload your .proto files when available for the best decoding experience</li>
             <li>If you have multiple .proto files, upload them all - ProtoPeek will handle imports automatically</li>
@@ -185,7 +186,7 @@ export default function TutorialPage() {
         </section>
 
         <section>
-          <h2 className='mb-4 text-headline-medium text-white'>Need Help?</h2>
+          <HeadingWithAnchor level={2} className='mb-4'>Need Help?</HeadingWithAnchor>
           <p className='leading-relaxed'>
             If you encounter any issues or have questions, feel free to{' '}
             <a 
