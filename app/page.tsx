@@ -20,6 +20,8 @@ import { ProtoByteTable } from './components/proto-byte-table';
 import { Header } from './components/header';
 import { ProtoFileSelector } from './components/proto-file-selector';
 import { MessageTypeSelector } from './components/message-type-selector';
+import { CopyButton } from './components/copy-button';
+import { SampleDataTooltip } from './components/sample-data-tooltip';
 import {
   DecodedField,
   ProtobufDecoder,
@@ -156,7 +158,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <div className='container mx-auto max-w-6xl px-4 py-10'>
+      <div className='container mx-auto max-w-6xl px-4 py-10 animate-fade-in-up'>
         <div className='mb-8 text-center'>
           <h2 className='mb-2 text-display-small font-normal text-white tracking-tight'>Decode Protocol Buffers</h2>
           <p className='text-title-medium text-gray-400'>
@@ -167,39 +169,15 @@ export default function Home() {
 
         <Card className='border border-gray-800 bg-[#202124] shadow-lg'>
           <CardHeader>
-            <CardTitle className='text-headline-small font-medium text-white'>Input Data</CardTitle>
-            <CardDescription className='text-body-large text-gray-400'>
-              Paste your protobuf bytes to decode the data (base64 or hex)
-              <div className='mt-2 flex flex-wrap gap-1'>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => loadSampleData('simple')}
-                  className='h-7 border-gray-600 text-label-medium hover:border-blue-500'
-                >
-                  Simple
-                </Button>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => loadSampleData('repeated')}
-                  className='h-7 border-gray-600 text-label-medium hover:border-blue-500'
-                >
-                  Repeated
-                </Button>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={() => loadSampleData('complex')}
-                  className='h-7 border-gray-600 text-label-medium hover:border-blue-500'
-                >
-                  Complex
-                </Button>
-                <span className='ml-1 self-center text-label-medium text-gray-400'>
-                  ← Sample data
-                </span>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className='text-headline-small font-medium text-white'>Input Data</CardTitle>
+                <CardDescription className='text-body-large text-gray-400'>
+                  Paste your protobuf bytes to decode the data (base64 or hex)
+                </CardDescription>
               </div>
-            </CardDescription>
+              <SampleDataTooltip onLoadSample={loadSampleData} />
+            </div>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
@@ -268,15 +246,22 @@ export default function Home() {
             <Button
               onClick={handleDecode}
               disabled={isDecoding}
-              className='w-full bg-blue-600 text-label-large font-medium text-white hover:bg-blue-700'
+              className='w-full bg-blue-600 text-label-large font-medium text-white hover:bg-blue-700 disabled:opacity-60'
             >
-              {isDecoding ? 'Decoding...' : 'Decode'}
+              {isDecoding ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                  Decoding...
+                </div>
+              ) : (
+                'Decode'
+              )}
             </Button>
           </CardContent>
         </Card>
 
         {decodedData && (
-          <Card className='mt-8 border border-gray-800 bg-[#202124] shadow-lg'>
+          <Card className='card-interactive mt-8 border border-gray-800 bg-[#202124] shadow-lg animate-fade-in-up'>
             <CardHeader className='pb-3'>
               <div className='flex items-center justify-between'>
                 <CardTitle className='text-headline-small font-medium text-white'>
@@ -335,13 +320,19 @@ export default function Home() {
                   <TabsContent value='structure'>
                     <div className='space-y-4'>
                       {protoFiles.map((file, index) => (
-                        <div key={file.path}>
-                          <h3 className='mb-2 text-title-large font-medium text-white'>
-                            {file.path}
-                          </h3>
+                        <div key={file.path} className="code-block relative group">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className='text-title-large font-medium text-white'>
+                              {file.path}
+                            </h3>
+                            <CopyButton 
+                              text={file.content} 
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            />
+                          </div>
                           <pre
                             className={cn(
-                              'rounded-md bg-[#303134] p-4',
+                              'rounded-md bg-[#303134] p-4 overflow-x-auto',
                               'font-mono text-body-medium'
                             )}
                           >
@@ -353,14 +344,20 @@ export default function Home() {
                   </TabsContent>
                 )}
                 <TabsContent value='raw'>
-                  <pre
-                    className={cn(
-                      'rounded-md bg-[#303134] p-4',
-                      'font-mono text-body-medium'
-                    )}
-                  >
-                    {decodedData}
-                  </pre>
+                  <div className="code-block relative group">
+                    <CopyButton 
+                      text={decodedData} 
+                      className="absolute top-3 right-3 z-10"
+                    />
+                    <pre
+                      className={cn(
+                        'rounded-md bg-[#303134] p-4 pr-12',
+                        'font-mono text-body-medium overflow-x-auto'
+                      )}
+                    >
+                      {decodedData}
+                    </pre>
+                  </div>
                 </TabsContent>
               </Tabs>
             </CardContent>

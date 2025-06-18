@@ -3,6 +3,7 @@
 import { Header } from './header';
 import { PageNavigation } from './page-navigation';
 import { MobileNavigation } from './mobile-navigation';
+import { Breadcrumbs } from './breadcrumbs';
 import { ReactNode, useEffect } from 'react';
 import { Calendar, Clock, User } from 'lucide-react';
 
@@ -62,11 +63,14 @@ export function BlogPost({
           </div>
           
           {/* Main Content */}
-          <div className='flex-1 max-w-4xl'>
+          <div className='flex-1 max-w-4xl animate-fade-in-up'>
             {/* Mobile Navigation Button */}
             <div className='mb-6 lg:hidden'>
               <MobileNavigation />
             </div>
+            
+            {/* Breadcrumbs */}
+            <Breadcrumbs />
             
             {/* Article Header */}
             <article className='mb-8'>
