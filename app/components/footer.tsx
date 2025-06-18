@@ -28,14 +28,6 @@ export function Footer() {
                     How to Use
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href='/blog'
-                    className='text-sm text-gray-400 transition-colors hover:text-white'
-                  >
-                    Blog
-                  </Link>
-                </li>
               </ul>
             </div>
 
