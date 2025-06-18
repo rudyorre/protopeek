@@ -25,7 +25,7 @@ export function MessageTypeSelector({
 
   return (
     <div className='space-y-1'>
-      <Label className='text-sm font-medium'>Message Type</Label>
+      <Label className='text-label-large font-medium'>Message Type</Label>
       <Select value={selectedType || ''} onValueChange={onTypeSelected}>
         <SelectTrigger className='h-9 border-gray-700 bg-[#303134] focus:border-blue-500'>
           <SelectValue placeholder='Select a message type' />
@@ -42,7 +42,7 @@ export function MessageTypeSelector({
           ))}
         </SelectContent>
       </Select>
-      <p className='text-xs text-gray-400'>
+      <p className='text-label-medium text-gray-400'>
         Choose which message type to use for decoding
       </p>
     </div>

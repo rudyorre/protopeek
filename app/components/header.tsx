@@ -12,14 +12,14 @@ export function Header() {
               <Code className='h-5 w-5 text-white' />
             </div>
             <div>
-              <h1 className='text-title-large font-medium text-white'>ProtoPeek</h1>
-              <div className='hidden text-label-medium text-gray-400 sm:block'>
+              <h1 className='text-title-large font-medium text-white tracking-tight'>ProtoPeek</h1>
+              <div className='hidden text-label-medium text-gray-400 sm:block font-normal'>
                 by{' '}
                 <a
                   href='https://rudyorre.com'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='text-blue-400 hover:underline'
+                  className='text-blue-400 hover:underline font-medium'
                 >
                   Rudy Orre
                 </a>

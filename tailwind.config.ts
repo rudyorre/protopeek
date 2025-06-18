@@ -22,7 +22,7 @@ const config = {
         sans: ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       fontSize: {
-        // Material Design 3 Typography Scale
+        // Material Design 3 Typography Scale - Google-optimized
         'display-large': ['3.5rem', { lineHeight: '1.12', letterSpacing: '-0.025em', fontWeight: '400' }],
         'display-medium': ['2.875rem', { lineHeight: '1.16', letterSpacing: '0', fontWeight: '400' }],
         'display-small': ['2.25rem', { lineHeight: '1.22', letterSpacing: '0', fontWeight: '400' }],
@@ -30,11 +30,16 @@ const config = {
         'headline-medium': ['1.75rem', { lineHeight: '1.29', letterSpacing: '0', fontWeight: '500' }],
         'headline-small': ['1.5rem', { lineHeight: '1.33', letterSpacing: '0', fontWeight: '500' }],
         'title-large': ['1.375rem', { lineHeight: '1.27', letterSpacing: '0', fontWeight: '500' }],
-        'title-medium': ['1rem', { lineHeight: '1.5', letterSpacing: '0.009375em', fontWeight: '500' }],
+        'title-medium': ['1rem', { lineHeight: '1.5', letterSpacing: '0.00938em', fontWeight: '500' }],
         'body-large': ['1rem', { lineHeight: '1.5', letterSpacing: '0.03125em', fontWeight: '400' }],
-        'body-medium': ['0.875rem', { lineHeight: '1.43', letterSpacing: '0.015625em', fontWeight: '400' }],
+        'body-medium': ['0.875rem', { lineHeight: '1.43', letterSpacing: '0.01563em', fontWeight: '400' }],
         'label-large': ['0.875rem', { lineHeight: '1.43', letterSpacing: '0.00625em', fontWeight: '500' }],
         'label-medium': ['0.75rem', { lineHeight: '1.33', letterSpacing: '0.03125em', fontWeight: '500' }],
+      },
+      letterSpacing: {
+        'tighter': '-0.00625em',
+        'google': '0.00625em',
+        'google-wide': '0.025em',
       },
       colors: {
         border: 'hsl(var(--border))',

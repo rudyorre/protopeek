@@ -33,8 +33,8 @@ export function FileViewerModal({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className='border-gray-800 bg-[#202124] sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle className='text-white'>Selected Proto Files</DialogTitle>
-          <DialogDescription className='text-gray-400'>
+          <DialogTitle className='text-headline-small text-white'>Selected Proto Files</DialogTitle>
+          <DialogDescription className='text-body-large text-gray-400'>
             {files.length} proto file{files.length !== 1 ? 's' : ''} currently
             selected
           </DialogDescription>
@@ -47,8 +47,8 @@ export function FileViewerModal({
               className='flex items-center justify-between rounded-md bg-[#303134] p-2'
             >
               <div className='flex-1 truncate'>
-                <p className='text-sm font-medium text-gray-200'>{file.name}</p>
-                <p className='truncate text-xs text-gray-400'>{file.path}</p>
+                <p className='text-label-large font-medium text-gray-200'>{file.name}</p>
+                <p className='truncate text-label-medium text-gray-400'>{file.path}</p>
               </div>
               <Button
                 variant='ghost'

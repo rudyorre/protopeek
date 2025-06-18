@@ -4,15 +4,16 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/app/components/footer';
 
-// Inter with optimized settings for Material Design 3 typography
-// Configured for the best rendering quality and readability
+// Inter with optimized settings for Google-like typography
+// Configured with specific weights and features for Material Design 3
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-inter',
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
   style: ['normal'],
   preload: true,
+  adjustFontFallback: false, // Better font rendering control
 });
 
 export const metadata = {

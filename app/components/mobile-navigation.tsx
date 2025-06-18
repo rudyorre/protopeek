@@ -81,7 +81,7 @@ export function MobileNavigation() {
         <div className="space-y-6">
           {navigationItems.map((section) => (
             <div key={section.title} className="mb-6">
-              <h3 className="mb-3 text-label-medium text-gray-400 font-medium tracking-wider uppercase">
+              <h3 className="mb-3 text-xs text-gray-400 font-medium tracking-wider uppercase">
                 {section.title}
               </h3>
               <ul className="space-y-1">

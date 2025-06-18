@@ -115,8 +115,7 @@ export function ProtoFileSelector({
       }
 
       // @ts-ignore - TypeScript doesn't have types for this API yet
-      const directoryHandle: FileSystemDirectoryHandle =
-        await window.showDirectoryPicker();
+      const directoryHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker();
 
       console.log('Selected directory:', directoryHandle.name);
 
@@ -230,8 +229,8 @@ export function ProtoFileSelector({
     <div className='space-y-2'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-          <Label className='text-sm font-medium'>Proto Files</Label>
-          <span className='text-xs text-gray-400'>(Optional)</span>
+          <Label className='text-label-large font-medium'>Proto Files</Label>
+          <span className='text-label-medium text-gray-400'>(Optional)</span>
         </div>
         {selectedFiles.length > 0 && (
           <Button
@@ -256,7 +255,7 @@ export function ProtoFileSelector({
             className='flex h-[85px] w-full flex-col gap-1 border-dashed border-gray-700 bg-[#303134] hover:border-blue-500 hover:bg-[#303134]'
           >
             <FileUp className='h-5 w-5 text-blue-500' />
-            <span className='text-sm'>
+            <span className='text-body-medium'>
               {selectedFiles.length > 0
                 ? `${selectedFiles.length} file(s) selected - Click to change`
                 : 'Select .proto files'}
@@ -268,7 +267,7 @@ export function ProtoFileSelector({
 
         {/* Show a more compact indicator of selected files directly on the button instead of below */}
         {selectedFiles.length === 0 && (
-          <p className='mt-1 text-xs text-gray-400'>
+          <p className='mt-1 text-label-medium text-gray-400'>
             Without proto files, field names will be replaced with field numbers
           </p>
         )}
@@ -276,21 +275,21 @@ export function ProtoFileSelector({
         {selectedFiles.length > 0 && (
           <div className='mt-2'>
             <div className='flex items-center justify-between'>
-              <div className='text-xs text-gray-400'>
+              <div className='text-label-medium text-gray-400'>
                 Selected files ({selectedFiles.length}):
               </div>
               <Button
                 variant='ghost'
                 size='sm'
                 onClick={() => setIsViewerModalOpen(true)}
-                className='h-5 p-0 text-xs text-blue-400 hover:text-blue-300'
+                className='h-5 p-0 text-label-medium text-blue-400 hover:text-blue-300'
               >
                 View all
               </Button>
             </div>
 
             {/* Show first file with ellipsis if there are more */}
-            <div className='mt-1 flex items-center justify-between rounded bg-[#3a3a3a] px-2 py-1 text-xs'>
+            <div className='mt-1 flex items-center justify-between rounded bg-[#3a3a3a] px-2 py-1 text-label-medium'>
               <span className='max-w-[200px] truncate font-mono text-gray-300'>
                 {selectedFiles[0].path}
                 {selectedFiles.length > 1
@@ -303,8 +302,8 @@ export function ProtoFileSelector({
 
         <DialogContent className='border-gray-800 bg-[#202124] sm:max-w-md'>
           <DialogHeader>
-            <DialogTitle className='text-white'>Select Proto Files</DialogTitle>
-            <DialogDescription className='text-gray-400'>
+            <DialogTitle className='text-headline-small text-white'>Select Proto Files</DialogTitle>
+            <DialogDescription className='text-body-large text-gray-400'>
               Choose how you want to provide your .proto schema files
             </DialogDescription>
           </DialogHeader>
@@ -323,11 +322,11 @@ export function ProtoFileSelector({
             <div className='grid gap-4'>
               <Card className='cursor-pointer border-gray-700 bg-[#303134] transition-colors hover:bg-[#3a3a3a]'>
                 <CardHeader className='pb-3'>
-                  <CardTitle className='flex items-center gap-2 text-lg text-white'>
+                  <CardTitle className='flex items-center gap-2 text-title-large text-white'>
                     <FileUp className='h-5 w-5 text-blue-500' />
                     Upload Files
                   </CardTitle>
-                  <CardDescription className='text-gray-400'>
+                  <CardDescription className='text-body-medium text-gray-400'>
                     Select one or more .proto files from your computer
                   </CardDescription>
                 </CardHeader>
@@ -354,11 +353,11 @@ export function ProtoFileSelector({
 
               <Card className='cursor-pointer border-gray-700 bg-[#303134] transition-colors hover:bg-[#3a3a3a]'>
                 <CardHeader className='pb-3'>
-                  <CardTitle className='flex items-center gap-2 text-lg text-white'>
+                  <CardTitle className='flex items-center gap-2 text-title-large text-white'>
                     <Folder className='h-5 w-5 text-green-500' />
                     Select Directory
                   </CardTitle>
-                  <CardDescription className='text-gray-400'>
+                  <CardDescription className='text-body-medium text-gray-400'>
                     Choose a folder and we'll find all .proto files in it
                   </CardDescription>
                 </CardHeader>
@@ -371,7 +370,7 @@ export function ProtoFileSelector({
                   >
                     {isLoadingDirectory ? 'Loading...' : 'Select Directory'}
                   </Button>
-                  <p className='mt-2 text-xs text-gray-500'>
+                  <p className='mt-2 text-label-medium text-gray-500'>
                     Requires Chrome 86+ or Edge 86+
                   </p>
                 </CardContent>

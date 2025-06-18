@@ -41,9 +41,9 @@ export function BlogPost({
             {/* Article Header */}
             <article className='mb-8'>
               <header className='mb-8'>
-                <h1 className='mb-4 text-headline-large text-white'>{title}</h1>
+                <h1 className='mb-4 text-display-small font-normal text-white tracking-tight'>{title}</h1>
                 {description && (
-                  <p className='mb-6 text-title-large text-gray-300'>{description}</p>
+                  <p className='mb-6 text-title-large font-normal text-gray-300 leading-relaxed'>{description}</p>
                 )}
                 
                 {/* Meta information */}
@@ -71,7 +71,7 @@ export function BlogPost({
 
               {/* Article Content */}
               <div className='prose prose-invert prose-blue max-w-none'>
-                <div className='rounded-lg border border-gray-800 bg-[#202124] p-8 shadow-lg text-body-large'>
+                <div className='rounded-lg border border-gray-800 bg-[#202124] p-8 shadow-lg text-body-large leading-relaxed'>
                   {children}
                 </div>
               </div>

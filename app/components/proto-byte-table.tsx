@@ -26,21 +26,21 @@ export function ProtoByteTable({ data }: { data: string }) {
 
   return (
     <div className='rounded-md bg-[#303134] p-4'>
-      <h2 className='mb-4 text-xl font-medium'>Result</h2>
+      <h2 className='mb-4 text-headline-small font-medium'>Result</h2>
       <div className='overflow-x-auto'>
         <table className='w-full border-collapse'>
           <thead>
             <tr className='bg-[#202124] text-gray-200'>
-              <th className='border-2 border-gray-600 px-4 py-2 text-left font-medium'>
+              <th className='border-2 border-gray-600 px-4 py-2 text-left text-label-large font-medium'>
                 Byte Range
               </th>
-              <th className='border-2 border-gray-600 px-4 py-2 text-left font-medium'>
+              <th className='border-2 border-gray-600 px-4 py-2 text-left text-label-large font-medium'>
                 Field Number
               </th>
-              <th className='border-2 border-gray-600 px-4 py-2 text-left font-medium'>
+              <th className='border-2 border-gray-600 px-4 py-2 text-left text-label-large font-medium'>
                 Type
               </th>
-              <th className='border-2 border-gray-600 px-4 py-2 text-left font-medium'>
+              <th className='border-2 border-gray-600 px-4 py-2 text-left text-label-large font-medium'>
                 Content
               </th>
             </tr>
@@ -61,7 +61,7 @@ function ProtoByteTableRow({ field }: { field: DecodedField }) {
   if (field.type.startsWith('repeated_') && Array.isArray(field.value)) {
     return (
       <tr>
-        <td className='border-2 border-gray-600 px-4 py-2' colSpan={4}>
+        <td className='border-2 border-gray-600 px-4 py-2 text-body-medium' colSpan={4}>
           <span className='font-medium text-gray-300'>
             Field {field.fieldNumber ?? '?'} ({field.type}):
           </span>
@@ -80,14 +80,14 @@ function ProtoByteTableRow({ field }: { field: DecodedField }) {
     return (
       <>
         <tr>
-          <td className='border-2 border-gray-600 px-4 py-2'>
+          <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>
             {formatByteRange(field.byteRange)}
           </td>
-          <td className='border-2 border-gray-600 px-4 py-2'>
+          <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>
             {field.fieldNumber ?? ''}
           </td>
-          <td className='border-2 border-gray-600 px-4 py-2'>{field.type}</td>
-          <td className='border-2 border-gray-600 px-4 py-2'>
+          <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>{field.type}</td>
+          <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>
             <span className='font-medium text-gray-300'>
               {field.message || 'Message'}
             </span>
@@ -107,14 +107,14 @@ function ProtoByteTableRow({ field }: { field: DecodedField }) {
   // Primitive
   return (
     <tr>
-      <td className='border-2 border-gray-600 px-4 py-2'>
+      <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>
         {formatByteRange(field.byteRange)}
       </td>
-      <td className='border-2 border-gray-600 px-4 py-2'>
+      <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>
         {field.fieldNumber ?? ''}
       </td>
-      <td className='border-2 border-gray-600 px-4 py-2'>{field.type}</td>
-      <td className='border-2 border-gray-600 px-4 py-2'>
+      <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>{field.type}</td>
+      <td className='border-2 border-gray-600 px-4 py-2 text-body-medium'>
         <span className={getValueClass(field.type)}>{formatValue(field)}</span>
       </td>
     </tr>

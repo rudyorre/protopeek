@@ -158,8 +158,8 @@ export default function Home() {
       <Header />
       <div className='container mx-auto max-w-6xl px-4 py-10'>
         <div className='mb-8 text-center'>
-          <h2 className='mb-2 text-3xl font-medium'>Decode Protocol Buffers</h2>
-          <p className='text-gray-400'>
+          <h2 className='mb-2 text-display-small font-normal text-white tracking-tight'>Decode Protocol Buffers</h2>
+          <p className='text-title-medium text-gray-400'>
             Visualize and explore your protobuf data with or without schema
             files
           </p>
@@ -167,15 +167,15 @@ export default function Home() {
 
         <Card className='border border-gray-800 bg-[#202124] shadow-lg'>
           <CardHeader>
-            <CardTitle className='text-xl font-medium'>Input Data</CardTitle>
-            <CardDescription>
+            <CardTitle className='text-headline-small font-medium text-white'>Input Data</CardTitle>
+            <CardDescription className='text-body-large text-gray-400'>
               Paste your protobuf bytes to decode the data (base64 or hex)
               <div className='mt-2 flex flex-wrap gap-1'>
                 <Button
                   variant='outline'
                   size='sm'
                   onClick={() => loadSampleData('simple')}
-                  className='h-7 border-gray-600 text-xs hover:border-blue-500'
+                  className='h-7 border-gray-600 text-label-medium hover:border-blue-500'
                 >
                   Simple
                 </Button>
@@ -183,7 +183,7 @@ export default function Home() {
                   variant='outline'
                   size='sm'
                   onClick={() => loadSampleData('repeated')}
-                  className='h-7 border-gray-600 text-xs hover:border-blue-500'
+                  className='h-7 border-gray-600 text-label-medium hover:border-blue-500'
                 >
                   Repeated
                 </Button>
@@ -191,11 +191,11 @@ export default function Home() {
                   variant='outline'
                   size='sm'
                   onClick={() => loadSampleData('complex')}
-                  className='h-7 border-gray-600 text-xs hover:border-blue-500'
+                  className='h-7 border-gray-600 text-label-medium hover:border-blue-500'
                 >
                   Complex
                 </Button>
-                <span className='ml-1 self-center text-xs text-gray-400'>
+                <span className='ml-1 self-center text-label-medium text-gray-400'>
                   ← Sample data
                 </span>
               </div>
@@ -209,7 +209,7 @@ export default function Home() {
                   <div className='flex items-center gap-2'>
                     <Label
                       htmlFor='protobufBytes'
-                      className='text-sm font-medium'
+                      className='text-label-large font-medium'
                     >
                       Protobuf Bytes
                     </Label>
@@ -218,11 +218,11 @@ export default function Home() {
                 <Textarea
                   id='protobufBytes'
                   placeholder='Paste your protobuf bytes here (base64: CgtIZWxsbyBXb3JsZA== or hex: 0a0b48656c6c6f20576f726c64)'
-                  className='mt-2 h-[85px] min-h-[85px] border-gray-700 bg-[#303134] font-mono text-sm focus:border-blue-500 focus:ring-blue-500'
+                  className='mt-2 h-[85px] min-h-[85px] border-gray-700 bg-[#303134] font-mono text-body-medium focus:border-blue-500 focus:ring-blue-500'
                   value={protobufBytes}
                   onChange={(e) => setProtobufBytes(e.target.value)}
                 />
-                <p className='mt-1 text-xs text-gray-400'>
+                <p className='mt-1 text-label-medium text-gray-400'>
                   Enter hex, base64, or comma-separated bytes
                 </p>
               </div>
@@ -251,7 +251,7 @@ export default function Home() {
             {info && (
               <Alert className='flex border-blue-800 bg-blue-900/30 py-2 text-blue-200'>
                 <Info className='h-4 w-4' />
-                <AlertDescription className='text-sm'>{info}</AlertDescription>
+                <AlertDescription className='text-body-medium'>{info}</AlertDescription>
               </Alert>
             )}
 
@@ -261,14 +261,14 @@ export default function Home() {
                 className='flex border-red-800 bg-red-900/30 py-2 text-red-200'
               >
                 <AlertCircle className='h-4 w-4' />
-                <AlertDescription className='text-sm'>{error}</AlertDescription>
+                <AlertDescription className='text-body-medium'>{error}</AlertDescription>
               </Alert>
             )}
 
             <Button
               onClick={handleDecode}
               disabled={isDecoding}
-              className='w-full bg-blue-600 font-medium text-white hover:bg-blue-700'
+              className='w-full bg-blue-600 text-label-large font-medium text-white hover:bg-blue-700'
             >
               {isDecoding ? 'Decoding...' : 'Decode'}
             </Button>
@@ -279,7 +279,7 @@ export default function Home() {
           <Card className='mt-8 border border-gray-800 bg-[#202124] shadow-lg'>
             <CardHeader className='pb-3'>
               <div className='flex items-center justify-between'>
-                <CardTitle className='text-xl font-medium'>
+                <CardTitle className='text-headline-small font-medium text-white'>
                   Decoded Results
                 </CardTitle>
                 <Button
@@ -289,7 +289,7 @@ export default function Home() {
                   className='border-gray-700 bg-[#303134] text-gray-200 hover:border-blue-500 hover:bg-[#303134]'
                 >
                   <Download className='mr-2 h-4 w-4 text-blue-500' />
-                  Download JSON
+                  <span className='text-label-large'>Download JSON</span>
                 </Button>
               </div>
             </CardHeader>
@@ -298,27 +298,27 @@ export default function Home() {
                 <TabsList className='mb-4 rounded-lg bg-[#303134] p-1'>
                   <TabsTrigger
                     value='decoded'
-                    className='rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white'
+                    className='rounded-md text-label-large data-[state=active]:bg-blue-600 data-[state=active]:text-white'
                   >
                     Tree View
                   </TabsTrigger>
                   <TabsTrigger
                     value='byte-table'
-                    className='rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white'
+                    className='rounded-md text-label-large data-[state=active]:bg-blue-600 data-[state=active]:text-white'
                   >
                     Byte Table
                   </TabsTrigger>
                   {protoFiles.length > 0 && (
                     <TabsTrigger
                       value='structure'
-                      className='rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white'
+                      className='rounded-md text-label-large data-[state=active]:bg-blue-600 data-[state=active]:text-white'
                     >
                       Proto Structure
                     </TabsTrigger>
                   )}
                   <TabsTrigger
                     value='raw'
-                    className='rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white'
+                    className='rounded-md text-label-large data-[state=active]:bg-blue-600 data-[state=active]:text-white'
                   >
                     Raw JSON
                   </TabsTrigger>
@@ -336,13 +336,13 @@ export default function Home() {
                     <div className='space-y-4'>
                       {protoFiles.map((file, index) => (
                         <div key={file.path}>
-                          <h3 className='mb-2 text-lg font-medium text-white'>
+                          <h3 className='mb-2 text-title-large font-medium text-white'>
                             {file.path}
                           </h3>
                           <pre
                             className={cn(
                               'rounded-md bg-[#303134] p-4',
-                              'font-mono text-sm'
+                              'font-mono text-body-medium'
                             )}
                           >
                             {file.content}
@@ -356,7 +356,7 @@ export default function Home() {
                   <pre
                     className={cn(
                       'rounded-md bg-[#303134] p-4',
-                      'font-mono text-sm'
+                      'font-mono text-body-medium'
                     )}
                   >
                     {decodedData}
