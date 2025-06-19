@@ -2,11 +2,6 @@
   <img src="public/logo.svg" alt="ProtoPeek Logo" width="180" />
 </p>
 
-# merde
-
-
-_Logo by [MisiasArt](https://misiasart.com)_
-
 # ProtoPeek
 
 A modern, web-based tool for decoding and visualizing Protocol Buffers (protobuf) data. Built with Next.js, React, and TypeScript, this application provides an intuitive interface for exploring protobuf messages with or without schema files.
