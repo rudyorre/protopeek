@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { useGitHubRelease } from '../use-github-release';
+import { useGitHubRelease } from './use-github-release';
 
 // Mock localStorage
 const localStorageMock = {
