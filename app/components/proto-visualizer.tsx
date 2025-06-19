@@ -30,7 +30,7 @@ export function ProtoVisualizer({ data }: { data: string }) {
 
   return (
     <div className='rounded-md bg-[#303134] p-4'>
-      <div className='mb-2 text-lg font-medium text-white'>{messageName}</div>
+      <div className='mb-2 text-title-large font-medium text-white'>{messageName}</div>
       <ProtoValue data={root} />
     </div>
   );
@@ -169,7 +169,7 @@ const ProtoValue = ({
               : 'false'
             : (data.value?.toString?.() ?? String(data.value))}
       </span>
-      <span className='text-xs text-gray-500'>({data.type})</span>
+      <span className='text-label-medium text-gray-500'>({data.type})</span>
     </div>
   );
 };
