@@ -19,18 +19,18 @@ interface SampleDataTooltipProps {
 const sampleData: SampleDataOption[] = [
   {
     type: 'simple',
-    title: 'Simple',
-    description: 'Basic message with a single string field'
+    title: 'Simple Message',
+    description: 'Basic protobuf with string and numeric fields'
   },
   {
     type: 'repeated',
-    title: 'Repeated',
-    description: 'Message with repeated fields and arrays'
+    title: 'Repeated Fields',
+    description: 'Demonstrates arrays and repeated elements'
   },
   {
     type: 'complex',
-    title: 'Complex',
-    description: 'Advanced message with nested structures'
+    title: 'Nested Structure',
+    description: 'Advanced message with nested objects and types'
   }
 ];
 
@@ -52,8 +52,8 @@ export function SampleDataTooltip({ onLoadSample, trigger = 'button' }: SampleDa
       const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
       
       setTooltipPosition({
-        top: rect.bottom + scrollTop + (trigger === 'link' ? 6 : 10),
-        left: rect.left + scrollLeft + (trigger === 'link' ? 0 : rect.width - 288) // 288px = w-72
+        top: rect.bottom + scrollTop + (trigger === 'link' ? 8 : 12),
+        left: rect.left + scrollLeft + (trigger === 'link' ? 0 : rect.width - 320) // 320px = w-80
       });
     }
   }, [isOpen, trigger]);
@@ -94,7 +94,7 @@ export function SampleDataTooltip({ onLoadSample, trigger = 'button' }: SampleDa
       return (
         <span
           onClick={() => setIsOpen(!isOpen)}
-          className="text-blue-400 hover:text-blue-300 cursor-pointer hover:underline inline"
+          className="text-blue-400 hover:text-blue-300 cursor-pointer hover:underline underline-offset-2 decoration-1 transition-all duration-200 inline-flex items-center gap-0.5"
         >
           try sample encodings
         </span>
@@ -117,48 +117,56 @@ export function SampleDataTooltip({ onLoadSample, trigger = 'button' }: SampleDa
 
   const renderTooltipContent = () => (
     <div 
-      className="fixed z-50 w-72 border border-gray-700 bg-[#202124] shadow-lg rounded-lg"
+      className="fixed z-50 w-80 border border-gray-600/50 bg-[#1f1f1f] shadow-2xl rounded-xl backdrop-blur-sm opacity-0 scale-95 animate-[fadeInScale_200ms_ease-out_forwards]"
       data-tooltip-content
       style={{
         top: tooltipPosition.top,
-        left: Math.max(8, Math.min(tooltipPosition.left, window.innerWidth - 288 - 8)) // Ensure it stays within viewport
+        left: Math.max(8, Math.min(tooltipPosition.left, window.innerWidth - 320 - 8)), // Updated for new width (320px = w-80)
+        animationDelay: '0ms'
       }}
     >
-      <div className="p-4 pb-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-white">
-            Sample Data
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsOpen(false)}
-            className="h-6 w-6 p-0 text-gray-400 hover:text-white"
-          >
-            <X className="h-3 w-3" />
-          </Button>
-        </div>
+      {/* Header with close button */}
+      <div className="relative px-5 py-4 border-b border-gray-700/50">
+        <h3 className="text-base font-medium text-white pr-8">
+          Sample Data
+        </h3>
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute right-3 top-4 p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-gray-700/50"
+          aria-label="Close"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
-      <div className="px-4 pb-4 space-y-2">
-        {sampleData.map((sample) => (
+
+      {/* Content */}
+      <div className="p-4 space-y-3">
+        {sampleData.map((sample, index) => (
           <button
             key={sample.type}
             onClick={() => handleSampleSelect(sample.type)}
-            className="w-full text-left p-3 rounded-md border border-gray-700 bg-[#303134] hover:border-blue-500 hover:bg-[#353739] transition-colors"
+            className="group w-full text-left p-4 rounded-lg border border-gray-700/50 bg-[#2a2a2a] hover:border-blue-500/60 hover:bg-[#2f2f2f] hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+            style={{ animationDelay: `${index * 50}ms` }}
           >
-            <span className="block font-medium text-white text-sm">
-              {sample.title}
-            </span>
-            <span className="block text-xs text-gray-400 mt-1">
-              {sample.description}
-            </span>
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <span className="block font-medium text-white text-sm group-hover:text-blue-100 transition-colors">
+                  {sample.title}
+                </span>
+                <span className="block text-xs text-gray-400 mt-1.5 leading-relaxed">
+                  {sample.description}
+                </span>
+              </div>
+            </div>
           </button>
         ))}
-        <div className="pt-2 border-t border-gray-700">
-          <p className="text-xs text-gray-400">
-            Click any sample to load protobuf data for testing
-          </p>
-        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 py-3.5 border-t border-gray-700/50 bg-gradient-to-r from-[#1a1a1a] to-[#1e1e1e] rounded-b-xl">
+        <p className="text-xs text-gray-500 leading-relaxed">
+          Click any sample to load protobuf data for testing
+        </p>
       </div>
     </div>
   );
