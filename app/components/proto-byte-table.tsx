@@ -45,15 +45,18 @@ export function ProtoByteTable({
   if (!root || !Array.isArray(root.value)) return null;
 
   return (
-    <div className='overflow-hidden rounded-lg border border-slate-800/90 bg-[#0D111A]'>
-      <div className='overflow-x-auto'>
+    <div
+      className='overflow-hidden rounded-lg border border-slate-800/90 bg-[#0D111A]'
+      onMouseLeave={() => onHoverRange?.(null)}
+    >
+      <div className='max-h-[380px] overflow-x-auto overflow-y-auto'>
         <table className='w-full border-collapse text-left text-xs'>
           <thead>
             <tr className='border-b border-slate-800 bg-slate-900/90 text-[11px] uppercase tracking-wider text-slate-400'>
-              <th className='px-4 py-2.5 font-semibold'>Byte Range</th>
-              <th className='px-4 py-2.5 font-semibold'>Field Number</th>
-              <th className='px-4 py-2.5 font-semibold'>Type</th>
-              <th className='px-4 py-2.5 font-semibold'>Content</th>
+              <th className='px-3.5 py-2 font-semibold'>Byte Range</th>
+              <th className='px-3.5 py-2 font-semibold'>Field Number</th>
+              <th className='px-3.5 py-2 font-semibold'>Type</th>
+              <th className='px-3.5 py-2 font-semibold'>Content</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-slate-800/60 font-mono'>
@@ -99,41 +102,33 @@ function ProtoByteTableRow({
     if (isScalarArray) {
       return (
         <tr
-          onMouseEnter={() =>
-            field.byteRange && onHoverRange?.(field.byteRange)
-          }
-          onMouseLeave={() => onHoverRange?.(null)}
+          onMouseEnter={() => onHoverRange?.(field.byteRange ?? null)}
           className={cn(
-            'transition-colors',
-            isHighlighted ? 'bg-sky-500/15' : 'hover:bg-slate-900/70'
+            isHighlighted ? 'bg-slate-800' : 'hover:bg-slate-900/60'
           )}
         >
-          <td className='whitespace-nowrap px-4 py-2.5 text-slate-400'>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-400'>
             {formatByteRange(field.byteRange)}
           </td>
-          <td className='whitespace-nowrap px-4 py-2.5 text-slate-200'>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-200'>
             <div
               className='flex items-center gap-2'
-              style={{ paddingLeft: `${depth * 16}px` }}
+              style={{ paddingLeft: `${depth * 14}px` }}
             >
               <span>{field.fieldNumber ?? ''}</span>
               {field.fieldName &&
                 field.fieldName !== String(field.fieldNumber) && (
-                  <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-300'>
+                  <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-200'>
                     {field.fieldName}
                   </span>
                 )}
             </div>
           </td>
-          <td className='whitespace-nowrap px-4 py-2.5'>
-            <span className='rounded border border-slate-800 bg-slate-900 px-1.5 py-0.5 text-[11px] text-slate-300'>
-              {field.type}
-            </span>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-400'>
+            {field.type}
           </td>
-          <td className='px-4 py-2.5'>
-            <span className='text-sky-400'>
-              [{field.value.map((v: any) => JSON.stringify(v)).join(', ')}]
-            </span>
+          <td className='px-3.5 py-2 text-sky-400'>
+            [{field.value.map((v: any) => JSON.stringify(v)).join(', ')}]
           </td>
         </tr>
       );
@@ -142,37 +137,29 @@ function ProtoByteTableRow({
     return (
       <>
         <tr
-          onMouseEnter={() =>
-            field.byteRange && onHoverRange?.(field.byteRange)
-          }
-          onMouseLeave={() => onHoverRange?.(null)}
-          className={cn(
-            'bg-slate-900/40 transition-colors',
-            isHighlighted ? 'bg-sky-500/15' : 'hover:bg-slate-900/70'
-          )}
+          onMouseEnter={() => onHoverRange?.(null)}
+          className='bg-slate-900/30'
         >
-          <td className='whitespace-nowrap px-4 py-2.5 text-slate-400'>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-500'>
             {formatByteRange(field.byteRange)}
           </td>
-          <td className='whitespace-nowrap px-4 py-2.5 text-slate-200'>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-200'>
             <div
               className='flex items-center gap-2'
-              style={{ paddingLeft: `${depth * 16}px` }}
+              style={{ paddingLeft: `${depth * 14}px` }}
             >
               <span>{field.fieldNumber ?? '?'}</span>
               {field.fieldName && (
-                <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-300'>
+                <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-200'>
                   {field.fieldName}
                 </span>
               )}
             </div>
           </td>
-          <td className='whitespace-nowrap px-4 py-2.5'>
-            <span className='rounded border border-slate-800 bg-slate-900 px-1.5 py-0.5 text-[11px] text-slate-300'>
-              {field.type}
-            </span>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-400'>
+            {field.type}
           </td>
-          <td className='px-4 py-2.5 text-slate-400'>
+          <td className='px-3.5 py-2 text-slate-400'>
             {field.value.length} repeated message items
           </td>
         </tr>
@@ -189,55 +176,38 @@ function ProtoByteTableRow({
     );
   }
 
-  // Handle message
+  // Handle message container
   if (field.type === 'message' && Array.isArray(field.value)) {
     return (
       <>
         <tr
-          onMouseEnter={() =>
-            field.byteRange && onHoverRange?.(field.byteRange)
-          }
-          onMouseLeave={() => onHoverRange?.(null)}
-          className={cn(
-            'bg-slate-900/30 transition-colors',
-            isHighlighted ? 'bg-sky-500/15' : 'hover:bg-slate-900/70'
-          )}
+          onMouseEnter={() => onHoverRange?.(null)}
+          className='bg-slate-900/30'
         >
-          <td className='whitespace-nowrap px-4 py-2.5 text-slate-400'>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-500'>
             {formatByteRange(field.byteRange)}
           </td>
-          <td className='whitespace-nowrap px-4 py-2.5 text-slate-200'>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-200'>
             <div
               className='flex items-center gap-2'
-              style={{ paddingLeft: `${depth * 16}px` }}
+              style={{ paddingLeft: `${depth * 14}px` }}
             >
               {depth > 0 && <span className='text-slate-600'>└─</span>}
               <span>{field.fieldNumber ?? ''}</span>
               {field.fieldName &&
                 field.fieldName !== String(field.fieldNumber) && (
-                  <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-300'>
+                  <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-200'>
                     {field.fieldName}
                   </span>
                 )}
             </div>
           </td>
-          <td className='whitespace-nowrap px-4 py-2.5'>
-            <div className='flex items-center gap-1.5'>
-              <span className='rounded border border-slate-800 bg-slate-900 px-1.5 py-0.5 text-[11px] text-slate-300'>
-                {field.type}
-              </span>
-              {field.wireType !== undefined && (
-                <span className='text-[10px] text-slate-500'>
-                  {WIRE_LABELS[field.wireType] || ''}
-                </span>
-              )}
-            </div>
+          <td className='whitespace-nowrap px-3.5 py-2 text-slate-400'>
+            {field.type}
           </td>
-          <td className='px-4 py-2.5'>
-            <span className='font-medium text-slate-300'>
-              {field.message || 'Message'} ({field.value.length}{' '}
-              {field.value.length === 1 ? 'field' : 'fields'})
-            </span>
+          <td className='px-3.5 py-2 font-medium text-slate-300'>
+            {field.message || 'Message'} ({field.value.length}{' '}
+            {field.value.length === 1 ? 'field' : 'fields'})
           </td>
         </tr>
         {field.value.map((subField, idx) => (
@@ -253,50 +223,43 @@ function ProtoByteTableRow({
     );
   }
 
-  // Primitive
+  // Primitive leaf row
   return (
     <tr
-      onMouseEnter={() => field.byteRange && onHoverRange?.(field.byteRange)}
-      onMouseLeave={() => onHoverRange?.(null)}
+      onMouseEnter={() => onHoverRange?.(field.byteRange ?? null)}
       className={cn(
-        'transition-colors',
-        isHighlighted ? 'bg-sky-500/15' : 'hover:bg-slate-900/70'
+        'cursor-pointer',
+        isHighlighted ? 'bg-slate-800' : 'hover:bg-slate-900/60'
       )}
     >
-      <td className='whitespace-nowrap px-4 py-2.5 text-slate-400'>
+      <td className='whitespace-nowrap px-3.5 py-2 text-slate-400'>
         {formatByteRange(field.byteRange)}
       </td>
-      <td className='whitespace-nowrap px-4 py-2.5 text-slate-200'>
+      <td className='whitespace-nowrap px-3.5 py-2 text-slate-200'>
         <div
           className='flex items-center gap-2'
-          style={{ paddingLeft: `${depth * 16}px` }}
+          style={{ paddingLeft: `${depth * 14}px` }}
         >
           {depth > 0 && <span className='text-slate-600'>└─</span>}
           <span>{field.fieldNumber ?? ''}</span>
           {field.fieldName && field.fieldName !== String(field.fieldNumber) && (
-            <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-300'>
+            <span className='rounded bg-slate-800 px-1.5 py-0.5 text-[11px] text-slate-200'>
               {field.fieldName}
             </span>
           )}
         </div>
       </td>
-      <td className='whitespace-nowrap px-4 py-2.5'>
-        <div className='flex items-center gap-1.5'>
-          <span className='rounded border border-slate-800 bg-slate-900 px-1.5 py-0.5 text-[11px] text-slate-300'>
-            {field.type}
+      <td className='whitespace-nowrap px-3.5 py-2 text-slate-400'>
+        <span>{field.type}</span>
+        {field.wireType !== undefined && (
+          <span className='ml-1.5 text-[10px] text-slate-500'>
+            {WIRE_LABELS[field.wireType] || ''}
           </span>
-          {field.wireType !== undefined && (
-            <span className='text-[10px] text-slate-500'>
-              {WIRE_LABELS[field.wireType] || ''}
-            </span>
-          )}
-        </div>
+        )}
       </td>
-      <td className='px-4 py-2.5'>
+      <td className='px-3.5 py-2'>
         <div className='flex flex-wrap items-center gap-2'>
-          <span className={getValueClass(field.type)}>
-            {formatValue(field)}
-          </span>
+          <span className='text-sky-400'>{formatValue(field)}</span>
           {field.interpretations?.float && field.type === 'fixed32' && (
             <span className='rounded bg-slate-800/80 px-1.5 py-0.5 text-[10px] text-slate-400'>
               float: {field.interpretations.float}
@@ -327,43 +290,8 @@ function formatByteRange(byteRange?: [number, number]): string {
 
 function formatValue(field: DecodedField): string {
   if (!field) return '';
-  switch (field.type) {
-    case 'string':
-      return String(field.value);
-    case 'int32':
-    case 'int64':
-    case 'varint':
-      return String(field.value);
-    case 'bool':
-      return field.value ? 'true' : 'false';
-    case 'enum':
-      return String(field.value);
-    case 'timestamp':
-      return String(field.value);
-    default:
-      return String(field.value);
+  if (field.type === 'bool') {
+    return field.value ? 'true' : 'false';
   }
-}
-
-function getValueClass(type: string): string {
-  return cn({
-    'text-sky-400': type === 'string',
-    'text-emerald-400': type === 'bool',
-    'text-amber-400':
-      type === 'int32' ||
-      type === 'int64' ||
-      type === 'uint32' ||
-      type === 'uint64' ||
-      type === 'sint32' ||
-      type === 'sint64' ||
-      type === 'varint',
-    'text-cyan-300': type === 'timestamp',
-    'text-rose-400': type === 'bytes',
-    'text-teal-400':
-      type === 'float' ||
-      type === 'double' ||
-      type === 'fixed32' ||
-      type === 'fixed64',
-    'text-orange-400': type === 'enum',
-  });
+  return String(field.value);
 }
