@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -431,7 +430,7 @@ export function ProtoFileSelector({
                       </p>
                     </div>
                   </div>
-                  <Input
+                  <input
                     type='file'
                     accept='.proto'
                     multiple
@@ -486,11 +485,12 @@ export function ProtoFileSelector({
                   >
                     Schema Filename
                   </Label>
-                  <Input
+                  <input
                     id='inline-proto-name'
+                    type='text'
                     value={inlineProtoName}
                     onChange={(e) => setInlineProtoName(e.target.value)}
-                    className='h-7 w-44 border-slate-800 bg-slate-900 font-mono text-xs text-slate-200'
+                    className='h-7 w-44 rounded-md border border-slate-800 bg-slate-900 px-2.5 font-mono text-xs text-slate-200 focus:border-sky-500/60 focus:outline-none'
                     placeholder='schema.proto'
                   />
                 </div>
