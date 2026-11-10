@@ -19,6 +19,8 @@
       }
     ],
     "paths": {
+      "@/components/ui/*": ["./app/components/ui/*"],
+      "@/lib/*": ["./app/lib/*"],
       "@/*": ["./*"],
       "@testing-library/jest-dom": ["./node_modules/@testing-library/jest-dom"]
     },

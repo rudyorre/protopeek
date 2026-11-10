@@ -48,9 +48,7 @@ export class ProtobufDecodingError extends Error {
   constructor(
     message: string,
     public readonly errorType:
-      | 'UNSUPPORTED_WIRE_TYPE'
-      | 'PARSING_ERROR'
-      | 'INVALID_FORMAT'
+      'UNSUPPORTED_WIRE_TYPE' | 'PARSING_ERROR' | 'INVALID_FORMAT'
   ) {
     super(message);
     this.name = 'ProtobufDecodingError';

@@ -2,7 +2,6 @@ import type React from 'react';
 import type { Metadata } from 'next';
 import '@/app/globals.css';
 import { Inter, JetBrains_Mono } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/app/components/footer';
 
 const inter = Inter({
@@ -40,17 +39,10 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning className='dark'>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='dark'
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          <div className='flex min-h-screen flex-col bg-[#0B0E14] text-slate-100'>
-            <main className='flex-grow'>{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+        <div className='flex min-h-screen flex-col bg-[#0B0E14] text-slate-100'>
+          <main className='flex-grow'>{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
