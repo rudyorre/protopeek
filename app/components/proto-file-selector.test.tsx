@@ -1,31 +1,6 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ProtoFileSelector } from '@/app/components/proto-file-selector';
 import '@testing-library/jest-dom';
-
-// Create more realistic file mock
-// class MockFile {
-//   name: string;
-//   type: string;
-//   size: number;
-//   content: string;
-
-//   constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
-//     this.name = name;
-//     this.type = options?.type || '';
-//     this.size = bits.length;
-//     this.content = Array.isArray(bits) ? bits.join('') : String(bits);
-//   }
-
-//   text() {
-//     return Promise.resolve(this.content);
-//   }
-// }
 
 describe('ProtoFileSelector', () => {
   const mockOnFilesSelected = jest.fn();
@@ -47,20 +22,27 @@ describe('ProtoFileSelector', () => {
     expect(screen.getByText('Select .proto files')).toBeInTheDocument();
   });
 
-  // TODO: Skip this test for now since we're having trouble simulating the file picker
-  test.skip('handles file selection', async () => {
+  test('displays selected files and allows clearing', () => {
     render(
       <ProtoFileSelector
         onFilesSelected={mockOnFilesSelected}
-        selectedFiles={[]}
+        selectedFiles={[
+          {
+            name: 'person.proto',
+            path: 'person.proto',
+            content: 'syntax = "proto3"; message Person { string name = 1; }',
+          },
+        ]}
       />
     );
 
-    // This test would need to be revisited after examining how the component actually works
+    expect(screen.getByText('person.proto')).toBeInTheDocument();
+    const clearBtn = screen.getByText('Clear All');
+    fireEvent.click(clearBtn);
+    expect(mockOnFilesSelected).toHaveBeenCalledWith([]);
   });
 
-  // TODO: Skip this test for now as well
-  test.skip('ignores non-proto files', async () => {
+  test('allows loading inline .proto schema from modal', async () => {
     render(
       <ProtoFileSelector
         onFilesSelected={mockOnFilesSelected}
@@ -68,6 +50,15 @@ describe('ProtoFileSelector', () => {
       />
     );
 
-    // This test would need to be revisited after examining how the component actually works
+    fireEvent.click(screen.getByText('Select .proto files'));
+    const inlineTab = await screen.findByText('Write / Paste .proto Inline');
+    fireEvent.click(inlineTab);
+
+    const loadBtn = await screen.findByText('Load Inline Schema');
+    fireEvent.click(loadBtn);
+
+    await waitFor(() => {
+      expect(mockOnFilesSelected).toHaveBeenCalledTimes(1);
+    });
   });
 });

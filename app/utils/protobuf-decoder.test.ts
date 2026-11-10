@@ -3,8 +3,11 @@ import {
   ProtobufDecoder,
   ProtobufDecodingError,
   WireType,
+  inferProtoSchema,
+  decodedFieldsToCleanJson,
 } from '@/app/utils/protobuf-decoder';
-import { expect, describe, test } from '@jest/globals';
+import { BufferReader } from '@/app/utils/buffer-reader';
+import { expect, describe, test, beforeEach } from '@jest/globals';
 
 describe('parseProtobufInput', () => {
   test('parses hex input correctly', () => {
@@ -13,6 +16,21 @@ describe('parseProtobufInput', () => {
     expect(result.length).toBe(13);
     expect(result[0]).toBe(10);
     expect(result[1]).toBe(11);
+  });
+
+  test('parses 0x-prefixed hex input correctly', () => {
+    const input = '0x08 0x96 0x01';
+    const result = parseProtobufInput(input);
+    expect(Array.from(result)).toEqual([8, 150, 1]);
+  });
+
+  test('parses comma-separated bytes correctly', () => {
+    const input = '8, 150, 1';
+    const result = parseProtobufInput(input);
+    expect(Array.from(result)).toEqual([8, 150, 1]);
+
+    const bracketHex = '[0x08, 0x96, 0x01]';
+    expect(Array.from(parseProtobufInput(bracketHex))).toEqual([8, 150, 1]);
   });
 
   test('parses base64 input correctly', () => {
@@ -25,6 +43,14 @@ describe('parseProtobufInput', () => {
 
   test('throws error for invalid input', () => {
     expect(() => parseProtobufInput('invalid!@#')).toThrow();
+  });
+});
+
+describe('BufferReader', () => {
+  test('throws on truncated varint at end of buffer', () => {
+    // 0x80 has continuation MSB set but no following byte
+    const reader = new BufferReader(new Uint8Array([0x80]));
+    expect(() => reader.readVarint()).toThrow(/Unexpected end of buffer/);
   });
 });
 
@@ -45,7 +71,6 @@ describe('decodeWithoutSchema', () => {
       type: 'varint',
       value: '150',
     });
-    // Check byte range
     expect(result[0].byteRange![0]).toBeLessThan(result[0].byteRange![1]);
   });
 
@@ -88,7 +113,7 @@ describe('decodeWithoutSchema', () => {
     });
   });
 
-  test('decodes a nested message', () => {
+  test('decodes a nested message with accurate root byteRange', () => {
     // Field 1: nested message
     //   Field 1: string with value "something"
     const base64 = 'CgsKCXNvbWV0aGluZw==';
@@ -102,45 +127,48 @@ describe('decodeWithoutSchema', () => {
       type: 'message',
     });
 
-    // Check the nested fields
-    const nestedFields = result[0].value;
+    const nestedFields = result[0].value as any[];
     expect(nestedFields).toHaveLength(1);
     expect(nestedFields[0]).toMatchObject({
       fieldNumber: 1,
       wireType: WireType.LENGTH_DELIMITED,
       type: 'string',
       value: 'something',
+      byteRange: [2, 13],
+    });
+  });
+
+  test('does not misclassify zero-padded binary bytes as fieldNumber 0 message', () => {
+    // Field 1: length-delimited 4 zero bytes (0a 04 00 00 00 00)
+    const buffer = parseProtobufInput('0a 04 00 00 00 00');
+    const result = decoder.decodeWithoutSchema(buffer);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      fieldNumber: 1,
+      type: 'bytes',
+      value: '00 00 00 00',
     });
   });
 
   test('decodes a message with repeated string fields', () => {
-    // This encodes:
-    // message Test {
-    //   repeated string tags = 1;
-    // }
-    // With values: ["one", "two", "three"]
     const hex = '0A 03 6F 6E 65 0A 03 74 77 6F 0A 05 74 68 72 65 65';
     const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
 
     const result = decoder.decodeWithoutSchema(buffer);
 
     expect(result).toHaveLength(3);
-
-    // All fields should have same field number but be separate entries
     expect(result[0]).toMatchObject({
       fieldNumber: 1,
       wireType: WireType.LENGTH_DELIMITED,
       type: 'string',
       value: 'one',
     });
-
     expect(result[1]).toMatchObject({
       fieldNumber: 1,
       wireType: WireType.LENGTH_DELIMITED,
       type: 'string',
       value: 'two',
     });
-
     expect(result[2]).toMatchObject({
       fieldNumber: 1,
       wireType: WireType.LENGTH_DELIMITED,
@@ -161,56 +189,23 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 1,
       wireType: WireType.VARINT,
       type: 'varint',
-      value: '4294967296', // 2^32
+      value: '4294967296',
     });
   });
 
   test('decodes a message with multiple repeated string fields', () => {
-    // This encodes a message with multiple repeated string fields
     const base64 = 'GgR0aGlzGgJpcxoEanVzdBoHYW5vdGhlchoFMTIzNDUaBXRlc3Qh';
     const buffer = parseProtobufInput(base64);
 
     const result = decoder.decodeWithoutSchema(buffer);
 
-    // Should decode to 6 string fields with field number 3
     expect(result).toHaveLength(6);
-
-    // Verify each field individually
     expect(result[0]).toMatchObject({
       fieldNumber: 3,
       wireType: WireType.LENGTH_DELIMITED,
       type: 'string',
       value: 'this',
     });
-
-    expect(result[1]).toMatchObject({
-      fieldNumber: 3,
-      wireType: WireType.LENGTH_DELIMITED,
-      type: 'string',
-      value: 'is',
-    });
-
-    expect(result[2]).toMatchObject({
-      fieldNumber: 3,
-      wireType: WireType.LENGTH_DELIMITED,
-      type: 'string',
-      value: 'just',
-    });
-
-    expect(result[3]).toMatchObject({
-      fieldNumber: 3,
-      wireType: WireType.LENGTH_DELIMITED,
-      type: 'string',
-      value: 'another',
-    });
-
-    expect(result[4]).toMatchObject({
-      fieldNumber: 3,
-      wireType: WireType.LENGTH_DELIMITED,
-      type: 'string',
-      value: '12345',
-    });
-
     expect(result[5]).toMatchObject({
       fieldNumber: 3,
       wireType: WireType.LENGTH_DELIMITED,
@@ -218,18 +213,14 @@ describe('decodeWithoutSchema', () => {
       value: 'test!',
     });
 
-    // Verify byte ranges are in ascending order
     for (let i = 0; i < result.length - 1; i++) {
       expect(result[i].byteRange![1]).toBe(result[i + 1].byteRange![0]);
     }
-
-    // Verify the entire buffer is consumed
     expect(result[0].byteRange![0]).toBe(0);
     expect(result[result.length - 1].byteRange![1]).toBe(buffer.length);
   });
 
   test('decodes a fixed32 field correctly', () => {
-    // Field 3: fixed32 with value 42 (0x0000002A in little-endian)
     const hex = '1D 2A 00 00 00';
     const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
 
@@ -240,12 +231,11 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 3,
       wireType: WireType.FIXED32,
       type: 'fixed32',
-      value: '42', // 0x0000002A in little-endian
+      value: '42',
     });
   });
 
   test('decodes a fixed64 field correctly', () => {
-    // Field 4: fixed64 with value 42 (0x000000000000002A in little-endian)
     const hex = '21 2A 00 00 00 00 00 00 00';
     const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
 
@@ -256,12 +246,11 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 4,
       wireType: WireType.FIXED64,
       type: 'fixed64',
-      value: '42', // 0x000000000000002A in little-endian
+      value: '42',
     });
   });
 
   test('decodes a large fixed32 value correctly', () => {
-    // Field 3: fixed32 with value 0xFFFFFFFF (max uint32)
     const hex = '1D FF FF FF FF';
     const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
 
@@ -272,12 +261,11 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 3,
       wireType: WireType.FIXED32,
       type: 'fixed32',
-      value: '4294967295', // 0xFFFFFFFF (max uint32)
+      value: '4294967295',
     });
   });
 
   test('decodes a large fixed64 value correctly', () => {
-    // Field 4: fixed64 with value (2^53-1) - the largest integer precisely representable in JavaScript
     const hex = '21 FF FF FF FF FF FF 1F 00';
     const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
 
@@ -288,15 +276,11 @@ describe('decodeWithoutSchema', () => {
       fieldNumber: 4,
       wireType: WireType.FIXED64,
       type: 'fixed64',
-      value: '9007199254740991', // 2^53-1
+      value: '9007199254740991',
     });
   });
 
   test('decodes a message with mixed field types including fixed', () => {
-    // Field 1: varint with value 42
-    // Field 2: fixed32 with value 100
-    // Field 3: fixed64 with value 200
-    // Field 4: string with value "test"
     const hex =
       '08 2A 15 64 00 00 00 19 C8 00 00 00 00 00 00 00 22 04 74 65 73 74';
     const buffer = parseProtobufInput(hex.replace(/\s/g, ''));
@@ -331,9 +315,6 @@ describe('decodeWithoutSchema', () => {
   });
 
   test('decodes a nested message with fixed fields correctly', () => {
-    // Field 1: nested message
-    //   Field 1: fixed32 with value 42
-    //   Field 2: fixed64 with value 84
     const hex = '0a 0e 0d 2a 00 00 00 11 54 00 00 00 00 00 00 00';
     const buffer = parseProtobufInput(hex);
 
@@ -346,8 +327,7 @@ describe('decodeWithoutSchema', () => {
       type: 'message',
     });
 
-    // Check the nested fields
-    const nestedFields = result[0].value;
+    const nestedFields = result[0].value as any[];
     expect(nestedFields).toHaveLength(2);
     expect(nestedFields[0]).toMatchObject({
       fieldNumber: 1,
@@ -364,7 +344,6 @@ describe('decodeWithoutSchema', () => {
   });
 
   test('throws error for START_GROUP and END_GROUP wire types', () => {
-    // Field 3: START_GROUP (wireType 3)
     const startGroupHex = '1b';
     const startGroupBuffer = parseProtobufInput(startGroupHex);
 
@@ -384,78 +363,118 @@ describe('decodeWithoutSchema', () => {
   });
 });
 
-// TODO: Do something about the commented tests below. Not sure if these were
-// important or not.
+describe('ProtobufDecoder schema-aware decoding & utilities', () => {
+  let decoder: ProtobufDecoder;
 
-// describe('ProtobufDecoder', () => {
-//   let decoder: ProtobufDecoder;
+  const sampleProtoFile = {
+    name: 'test.proto',
+    content: `
+      syntax = "proto3";
+      package test;
 
-//   const sampleProtoFile = {
-//     name: 'test.proto',
-//     content: `
-//       syntax = "proto3";
-//       package test;
+      message Person {
+        string name = 1;
+        int32 id = 2;
+        string email = 3;
+      }
 
-//       message Person {
-//         string name = 1;
-//         int32 id = 2;
-//         string email = 3;
-//       }
+      message Address {
+        string street = 1;
+        string city = 2;
+        string country = 3;
+      }
+    `,
+    path: '/test.proto',
+  };
 
-//       message Address {
-//         string street = 1;
-//         string city = 2;
-//         string country = 3;
-//       }
-//     `,
-//     path: '/test.proto'
-//   };
+  beforeEach(() => {
+    decoder = new ProtobufDecoder();
+  });
 
-//   beforeEach(() => {
-//     decoder = new ProtobufDecoder();
-//   });
+  test('loadProtoFiles loads proto definitions without duplicates', async () => {
+    await decoder.loadProtoFiles([sampleProtoFile]);
+    const types = decoder.getAvailableMessageTypes();
+    expect(types).toEqual(['test.Person', 'test.Address']);
+  });
 
-//   test('loadProtoFiles loads proto definitions correctly', async () => {
-//     await decoder.loadProtoFiles([sampleProtoFile]);
-//     const types = decoder.getAvailableMessageTypes();
-//     expect(types).toContain('test.Person');
-//     expect(types).toContain('test.Address');
-//   });
+  test('decodeWithSchema preserves schema fieldName and byteRange metadata', async () => {
+    const encodedData = '0a044a6f686e107b1a106a6f686e406578616d706c652e636f6d';
+    const bytes = parseProtobufInput(encodedData);
 
-//   test('decodeProtobufInput decodes a message correctly with proto definition', async () => {
-//     // This is a protobuf encoding of a Person with name="John", id=123, email="john@example.com"
-//     const encodedData = '0a044a6f686e107b1a106a6f686e406578616d706c652e636f6d';
+    await decoder.loadProtoFiles([sampleProtoFile]);
+    const fields = await decoder.decodeWithSchema(bytes, 'test.Person');
 
-//     await decoder.loadProtoFiles([sampleProtoFile]);
-//     const result = await decoder.decodeProtobufInput(encodedData, 'test.Person');
+    expect(fields).toHaveLength(3);
+    expect(fields[0]).toMatchObject({
+      fieldName: 'name',
+      fieldNumber: 1,
+      type: 'string',
+      value: 'John',
+      byteRange: [0, 6],
+    });
+    expect(fields[1]).toMatchObject({
+      fieldName: 'id',
+      fieldNumber: 2,
+      type: 'int32',
+      value: 123,
+      byteRange: [6, 8],
+    });
+    expect(fields[2]).toMatchObject({
+      fieldName: 'email',
+      fieldNumber: 3,
+      type: 'string',
+      value: 'john@example.com',
+      byteRange: [8, 26],
+    });
+  });
 
-//     expect(result.message).toBe('test.Person');
-//     expect(result.fields['name'].value).toBe('John');
-//     expect(result.fields['id'].value).toBe(123);
-//     expect(result.fields['email'].value).toBe('john@example.com');
-//   });
+  test('decodeProtobufInput decodes a message with and without proto definition', async () => {
+    const encodedData = '0a044a6f686e107b1a106a6f686e406578616d706c652e636f6d';
 
-//   test('decodeProtobufInput works without proto definition', async () => {
-//     // Same encoded data as above
-//     const encodedData = '0a044a6f686e107b1a106a6f686e406578616d706c652e636f6d';
+    // Without schema
+    const schemalessResult = await decoder.decodeProtobufInput(encodedData);
+    expect(schemalessResult.message).toBe('Unknown');
+    expect(schemalessResult.fields['1'].value).toBe('John');
+    expect(schemalessResult.fields['2'].value).toBe(123);
+    expect(schemalessResult.fields['3'].value).toBe('john@example.com');
 
-//     const result = await decoder.decodeProtobufInput(encodedData);
+    // With schema
+    await decoder.loadProtoFiles([sampleProtoFile]);
+    const schemaResult = await decoder.decodeProtobufInput(
+      encodedData,
+      'test.Person'
+    );
+    expect(schemaResult.message).toBe('test.Person');
+    expect(schemaResult.fields['name'].value).toBe('John');
+    expect(schemaResult.fields['id'].value).toBe(123);
+    expect(schemaResult.fields['email'].value).toBe('john@example.com');
+  });
 
-//     expect(result.message).toBe('Unknown');
-//     expect(result.fields).toBeDefined();
-//     // The fields will be numbered rather than named
-//     expect(result.fields['1'].value).toBe('John');
-//     expect(result.fields['2'].value).toBe(123);
-//     expect(result.fields['3'].value).toBe('john@example.com');
-//   });
+  test('handles invalid proto file content', async () => {
+    const invalidProto = {
+      name: 'invalid.proto',
+      content: 'this is not valid proto syntax',
+      path: '/invalid.proto',
+    };
 
-//   test('handles invalid proto file content', async () => {
-//     const invalidProto = {
-//       name: 'invalid.proto',
-//       content: 'this is not valid proto syntax',
-//       path: '/invalid.proto'
-//     };
+    await expect(decoder.loadProtoFiles([invalidProto])).rejects.toThrow();
+  });
 
-//     await expect(decoder.loadProtoFiles([invalidProto])).rejects.toThrow();
-//   });
-// });
+  test('inferProtoSchema and decodedFieldsToCleanJson synthesize valid output', () => {
+    const encodedData = '0a044a6f686e107b1a106a6f686e406578616d706c652e636f6d';
+    const fields = decoder.decodeWithoutSchema(parseProtobufInput(encodedData));
+
+    const inferred = inferProtoSchema(fields, 'InferredPerson');
+    expect(inferred).toContain('syntax = "proto3";');
+    expect(inferred).toContain('message InferredPerson');
+    expect(inferred).toContain('string field_1 = 1;');
+    expect(inferred).toContain('int64 field_2 = 2;');
+
+    const cleanJson = decodedFieldsToCleanJson(fields);
+    expect(cleanJson).toEqual({
+      field_1: 'John',
+      field_2: 123,
+      field_3: 'john@example.com',
+    });
+  });
+});

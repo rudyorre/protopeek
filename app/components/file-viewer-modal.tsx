@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { X } from 'lucide-react';
+import { X, FileCode } from 'lucide-react';
 
 interface ProtoFile {
   name: string;
@@ -31,33 +31,47 @@ export function FileViewerModal({
 }: FileViewerModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className='border-gray-800 bg-[#202124] sm:max-w-md'>
+      <DialogContent className='border-slate-800 bg-[#111621] text-slate-100 sm:max-w-xl'>
         <DialogHeader>
-          <DialogTitle className='text-white'>Selected Proto Files</DialogTitle>
-          <DialogDescription className='text-gray-400'>
+          <DialogTitle className='text-base font-semibold text-white'>
+            Loaded Proto Schemas
+          </DialogTitle>
+          <DialogDescription className='text-xs text-slate-400'>
             {files.length} proto file{files.length !== 1 ? 's' : ''} currently
-            selected
+            active
           </DialogDescription>
         </DialogHeader>
 
-        <div className='max-h-[50vh] space-y-2 overflow-y-auto pr-2'>
+        <div className='max-h-[60vh] space-y-3 overflow-y-auto pr-1'>
           {files.map((file) => (
             <div
               key={file.path}
-              className='flex items-center justify-between rounded-md bg-[#303134] p-2'
+              className='rounded-lg border border-slate-800 bg-[#0D111A] p-3'
             >
-              <div className='flex-1 truncate'>
-                <p className='text-sm font-medium text-gray-200'>{file.name}</p>
-                <p className='truncate text-xs text-gray-400'>{file.path}</p>
+              <div className='mb-2 flex items-center justify-between'>
+                <div className='flex items-center gap-2 truncate'>
+                  <FileCode className='h-4 w-4 shrink-0 text-sky-400' />
+                  <div className='truncate'>
+                    <p className='font-mono text-xs font-semibold text-slate-200'>
+                      {file.name}
+                    </p>
+                    <p className='truncate font-mono text-[10px] text-slate-500'>
+                      {file.path}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={() => onRemoveFile(file.path)}
+                  className='ml-2 h-7 w-7 p-0 text-slate-400 hover:bg-rose-500/10 hover:text-rose-400'
+                >
+                  <X className='h-3.5 w-3.5' />
+                </Button>
               </div>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => onRemoveFile(file.path)}
-                className='ml-2 h-7 w-7 p-0 text-gray-400 hover:text-red-400'
-              >
-                <X className='h-4 w-4' />
-              </Button>
+              <pre className='max-h-40 overflow-x-auto overflow-y-auto rounded border border-slate-800/80 bg-slate-950 p-2.5 font-mono text-[11px] leading-relaxed text-slate-300'>
+                {file.content}
+              </pre>
             </div>
           ))}
         </div>

@@ -31,6 +31,9 @@ export class BufferReader {
     let bytesRead = 0;
 
     do {
+      if (this.offset >= this.buffer.length) {
+        throw new Error('Unexpected end of buffer while reading varint');
+      }
       if (shift >= 64) {
         throw new Error('Varint is too long');
       }
@@ -59,7 +62,7 @@ export class BufferReader {
    * @returns A new Uint8Array containing the requested bytes
    */
   readBytes(length: number): Uint8Array {
-    if (length > this.leftBytes()) {
+    if (length < 0 || length > this.leftBytes()) {
       throw new Error(
         `Not enough bytes left. Requested: ${length}, left: ${this.leftBytes()}`
       );

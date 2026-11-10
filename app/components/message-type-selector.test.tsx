@@ -1,6 +1,32 @@
 import { render, screen } from '@testing-library/react';
+import { MessageTypeSelector } from '@/app/components/message-type-selector';
 import { ProtoByteTable } from '@/app/components/proto-byte-table';
 import '@testing-library/jest-dom';
+
+describe('MessageTypeSelector', () => {
+  test('renders nothing when messageTypes is empty', () => {
+    const { container } = render(
+      <MessageTypeSelector
+        messageTypes={[]}
+        selectedType={null}
+        onTypeSelected={jest.fn()}
+      />
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  test('renders selector when messageTypes are provided', () => {
+    render(
+      <MessageTypeSelector
+        messageTypes={['tutorial.Person', 'tutorial.AddressBook']}
+        selectedType='tutorial.Person'
+        onTypeSelected={jest.fn()}
+      />
+    );
+    expect(screen.getByText('Message Type')).toBeInTheDocument();
+    expect(screen.getByText('2 available')).toBeInTheDocument();
+  });
+});
 
 describe('ProtoByteTable', () => {
   const sampleData = JSON.stringify([
@@ -24,32 +50,16 @@ describe('ProtoByteTable', () => {
   test('renders the table with headers', () => {
     render(<ProtoByteTable data={sampleData} />);
 
-    // Check that a table exists
     const table = screen.getByRole('table');
     expect(table).toBeInTheDocument();
 
-    // Verify the table has header cells
     const headerCells = screen.getAllByRole('columnheader');
     expect(headerCells.length).toBeGreaterThan(0);
-
-    // Alternative approach: check for specific headers that we know exist
-    const commonHeaders = ['Field', 'Type', 'Value'];
-    commonHeaders.forEach((header) => {
-      const element =
-        screen.queryByText(header) ||
-        screen.queryByText(header, { exact: false }) ||
-        screen.queryByText(new RegExp(header, 'i'));
-
-      if (element) {
-        expect(element).toBeInTheDocument();
-      }
-    });
   });
 
   test('renders field rows for each field in the data', () => {
     render(<ProtoByteTable data={sampleData} />);
 
-    // Use more flexible text matching for fields
     const values = ['John Doe', '123', 'john@example.com'];
     values.forEach((value) => {
       expect(
