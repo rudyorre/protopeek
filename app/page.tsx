@@ -599,16 +599,8 @@ export default function Home() {
 
         {/* Decoded Results Section */}
         {decodedData && (
-          <div className='mt-6 space-y-4'>
-            {/* Interactive Wire Hex Dump */}
-            <ProtoHexInspector
-              bytes={rawBytesBuffer}
-              decodedData={decodedData}
-              highlightedRange={highlightedRange}
-              onSelectRange={setHighlightedRange}
-            />
-
-            <Card className='border-slate-800/90 bg-[#111621] shadow-xl'>
+          <div className='mt-6'>
+            <Card className='border-slate-800/90 bg-[#111621]'>
               <CardHeader className='border-b border-slate-800/70 pb-3'>
                 <div className='flex flex-wrap items-center justify-between gap-2'>
                   <div className='flex items-center gap-2.5'>
@@ -661,7 +653,7 @@ export default function Home() {
                       value='decoded'
                       className='rounded-md px-3 py-1.5 text-xs font-medium data-[state=active]:bg-sky-500 data-[state=active]:font-semibold data-[state=active]:text-slate-950'
                     >
-                      Tree View
+                      Tree + Hex
                     </TabsTrigger>
                     <TabsTrigger
                       value='byte-table'
@@ -692,20 +684,44 @@ export default function Home() {
                   </TabsList>
 
                   <TabsContent value='decoded'>
-                    <ProtoVisualizer
-                      data={decodedData}
-                      messageTypeName={selectedMessageType}
-                      highlightedRange={highlightedRange}
-                      onHoverRange={setHighlightedRange}
-                    />
+                    <div className='grid grid-cols-1 gap-4 lg:grid-cols-12'>
+                      <div className='lg:col-span-5'>
+                        <ProtoHexInspector
+                          bytes={rawBytesBuffer}
+                          decodedData={decodedData}
+                          highlightedRange={highlightedRange}
+                          onSelectRange={setHighlightedRange}
+                        />
+                      </div>
+                      <div className='lg:col-span-7'>
+                        <ProtoVisualizer
+                          data={decodedData}
+                          messageTypeName={selectedMessageType}
+                          highlightedRange={highlightedRange}
+                          onHoverRange={setHighlightedRange}
+                        />
+                      </div>
+                    </div>
                   </TabsContent>
 
                   <TabsContent value='byte-table' className='overflow-x-auto'>
-                    <ProtoByteTable
-                      data={decodedData}
-                      highlightedRange={highlightedRange}
-                      onHoverRange={setHighlightedRange}
-                    />
+                    <div className='grid grid-cols-1 gap-4 lg:grid-cols-12'>
+                      <div className='lg:col-span-5'>
+                        <ProtoHexInspector
+                          bytes={rawBytesBuffer}
+                          decodedData={decodedData}
+                          highlightedRange={highlightedRange}
+                          onSelectRange={setHighlightedRange}
+                        />
+                      </div>
+                      <div className='lg:col-span-7'>
+                        <ProtoByteTable
+                          data={decodedData}
+                          highlightedRange={highlightedRange}
+                          onHoverRange={setHighlightedRange}
+                        />
+                      </div>
+                    </div>
                   </TabsContent>
 
                   <TabsContent value='table-view'>

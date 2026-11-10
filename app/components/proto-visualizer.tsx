@@ -4,8 +4,6 @@ import { cn } from '@/lib/utils';
 import {
   ChevronDown,
   ChevronRight,
-  Copy,
-  Check,
   Search,
   ChevronsUpDown,
 } from 'lucide-react';
@@ -61,28 +59,31 @@ export function ProtoVisualizer({
     : [];
 
   return (
-    <div className='rounded-lg border border-slate-800/90 bg-[#0D111A] p-4'>
-      <div className='mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3'>
-        <div className='flex items-center gap-2.5'>
-          <div className='font-mono text-base font-semibold text-slate-100'>
+    <div
+      className='rounded-lg border border-slate-800/90 bg-[#0D111A] p-3 text-xs'
+      onMouseLeave={() => onHoverRange?.(null)}
+    >
+      <div className='mb-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2'>
+        <div className='flex items-center gap-2'>
+          <span className='font-mono text-xs font-semibold text-slate-200'>
             {messageName}
-          </div>
-          <span className='rounded-full border border-slate-700/70 bg-slate-800/70 px-2 py-0.5 font-mono text-[11px] text-slate-400'>
+          </span>
+          <span className='rounded bg-slate-800/80 px-1.5 py-0.5 font-mono text-[11px] text-slate-400'>
             {topFields.length} field{topFields.length === 1 ? '' : 's'}
           </span>
         </div>
 
         {topFields.length > 0 && (
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-1.5'>
             <div className='relative'>
-              <Search className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500' />
+              <Search className='pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-slate-500' />
               <input
                 type='text'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder='Filter fields or values...'
+                placeholder='Filter...'
                 aria-label='Filter fields or values'
-                className='h-7 w-44 rounded-md border border-slate-800 bg-slate-900/90 pl-8 pr-2.5 text-xs text-slate-200 placeholder:text-slate-500 focus:border-sky-500/60 focus:outline-none sm:w-52'
+                className='h-6 w-36 rounded border border-slate-800 bg-[#090C12] pl-6 pr-2 text-xs text-slate-200 placeholder:text-slate-500 focus:border-sky-500/60 focus:outline-none sm:w-44'
               />
             </div>
             <button
@@ -93,10 +94,10 @@ export function ProtoVisualizer({
                   version: prev.version + 1,
                 }))
               }
-              className='inline-flex h-7 items-center gap-1 rounded-md border border-slate-800 bg-slate-900/90 px-2 text-xs text-slate-300 transition-colors hover:border-slate-700 hover:text-white'
+              className='inline-flex h-6 items-center gap-1 rounded border border-slate-800 bg-[#090C12] px-2 text-[11px] text-slate-400 hover:text-slate-200'
               title='Expand or collapse all nested nodes'
             >
-              <ChevronsUpDown className='h-3.5 w-3.5 text-slate-400' />
+              <ChevronsUpDown className='h-3 w-3' />
               <span className='hidden sm:inline'>
                 {expandGeneration.expanded ? 'Collapse' : 'Expand'}
               </span>
@@ -105,13 +106,15 @@ export function ProtoVisualizer({
         )}
       </div>
 
-      <ProtoValue
-        data={root}
-        searchQuery={searchQuery.trim().toLowerCase()}
-        expandSignal={expandGeneration}
-        highlightedRange={highlightedRange}
-        onHoverRange={onHoverRange}
-      />
+      <div className='max-h-[340px] overflow-y-auto font-mono'>
+        <ProtoValue
+          data={root}
+          searchQuery={searchQuery.trim().toLowerCase()}
+          expandSignal={expandGeneration}
+          highlightedRange={highlightedRange}
+          onHoverRange={onHoverRange}
+        />
+      </div>
     </div>
   );
 }
@@ -158,7 +161,6 @@ const ProtoValue = ({
 }) => {
   const [localExpanded, setLocalExpanded] = useState(true);
   const [lastSignalVersion, setLastSignalVersion] = useState(0);
-  const [copied, setCopied] = useState(false);
 
   if (expandSignal && expandSignal.version !== lastSignalVersion) {
     setLastSignalVersion(expandSignal.version);
@@ -169,59 +171,44 @@ const ProtoValue = ({
 
   if (!data) return null;
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard?.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1400);
-  };
-
   // Handle repeated fields (arrays of messages or scalars)
   if (data.type.startsWith('repeated_')) {
     const label = data.fieldName || fieldName || 'repeated';
     return (
-      <div className={cn('pl-2', level > 0 ? 'mt-1.5' : '')}>
+      <div className={cn('pl-1', level > 0 ? 'mt-1' : '')}>
         <div
-          className='inline-flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 transition-colors hover:bg-slate-800/60'
+          className='inline-flex cursor-pointer items-center gap-1.5 rounded px-1 py-0.5 text-slate-300 hover:bg-slate-800/50'
           onClick={() => setLocalExpanded(!isExpanded)}
         >
           {isExpanded ? (
-            <ChevronDown className='h-3.5 w-3.5 text-slate-400' />
+            <ChevronDown className='h-3 w-3 text-slate-500' />
           ) : (
-            <ChevronRight className='h-3.5 w-3.5 text-slate-400' />
+            <ChevronRight className='h-3 w-3 text-slate-500' />
           )}
-          <span className='font-mono text-xs font-medium text-slate-200'>
-            {label}
-          </span>
-          <span className='rounded bg-slate-800 px-1.5 py-0.5 font-mono text-[11px] text-slate-400'>
-            {Array.isArray(data.value) ? `${data.value.length} items` : 'array'}
-          </span>
-          <span className='font-mono text-[11px] text-slate-500'>
-            ({data.type})
+          <span className='font-semibold text-slate-200'>{label}</span>
+          <span className='text-slate-500'>
+            ({Array.isArray(data.value) ? `${data.value.length}` : '0'})
           </span>
         </div>
         {isExpanded && Array.isArray(data.value) && (
-          <div className='ml-2 mt-1 border-l border-slate-800 pl-3.5'>
+          <div className='ml-2 mt-0.5 space-y-1 border-l border-slate-800/80 pl-2.5'>
             {data.value.map((item: any, index: number) => (
-              <div key={index} className='mt-1.5'>
-                <div className='flex items-start gap-2'>
-                  <span className='mt-0.5 font-mono text-xs font-medium text-slate-500'>
-                    [{index}]
-                  </span>
-                  {typeof item === 'object' && item !== null ? (
-                    <ProtoValue
-                      data={item}
-                      level={level + 1}
-                      searchQuery={searchQuery}
-                      expandSignal={expandSignal}
-                      highlightedRange={highlightedRange}
-                      onHoverRange={onHoverRange}
-                    />
-                  ) : (
-                    <span className='font-mono text-xs text-sky-400'>
-                      {JSON.stringify(item)}
-                    </span>
-                  )}
-                </div>
+              <div key={index}>
+                {typeof item === 'object' && item !== null ? (
+                  <ProtoValue
+                    data={item}
+                    level={level + 1}
+                    searchQuery={searchQuery}
+                    expandSignal={expandSignal}
+                    highlightedRange={highlightedRange}
+                    onHoverRange={onHoverRange}
+                  />
+                ) : (
+                  <div className='flex items-center gap-1.5 px-1.5 py-0.5'>
+                    <span className='text-slate-500'>[{index}]</span>
+                    <span className='text-sky-400'>{JSON.stringify(item)}</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -236,47 +223,39 @@ const ProtoValue = ({
       matchesSearch(f, searchQuery)
     );
     const displayHeader =
-      data.fieldName ||
-      (data.message && data.message !== String(data.fieldNumber)
+      data.message && data.message !== String(data.fieldNumber)
         ? data.message
-        : fieldName && fieldName !== String(data.fieldNumber)
-          ? fieldName
-          : 'Message');
+        : 'Message';
 
     return (
-      <div className={cn('pl-0', level > 0 ? 'mt-0.5' : '')}>
+      <div className={cn(level > 0 ? 'w-full' : '')}>
         {level > 0 && (
           <div
-            className='inline-flex cursor-pointer items-center gap-1.5 rounded px-1.5 py-0.5 transition-colors hover:bg-slate-800/60'
+            className='inline-flex cursor-pointer items-center gap-1.5 rounded px-1 py-0.5 hover:bg-slate-800/50'
             onClick={() => setLocalExpanded(!isExpanded)}
           >
             {isExpanded ? (
-              <ChevronDown className='h-3.5 w-3.5 text-slate-400' />
+              <ChevronDown className='h-3 w-3 text-slate-500' />
             ) : (
-              <ChevronRight className='h-3.5 w-3.5 text-slate-400' />
+              <ChevronRight className='h-3 w-3 text-slate-500' />
             )}
-            <span className='font-mono text-xs font-semibold text-slate-200'>
-              {displayHeader}
-            </span>
-            <span className='rounded bg-slate-800/80 px-1.5 py-0.5 font-mono text-[10px] text-slate-400'>
-              {fields.length} {fields.length === 1 ? 'field' : 'fields'}
-            </span>
-            {data.byteRange && (
-              <span className='font-mono text-[10px] text-slate-500'>
-                bytes {data.byteRange[0]}–{data.byteRange[1]}
+            {data.fieldName && data.fieldName !== String(data.fieldNumber) && (
+              <span className='rounded bg-slate-800 px-1.5 py-0.5 font-semibold text-slate-200'>
+                {data.fieldName}
               </span>
             )}
+            <span className='font-semibold text-sky-400'>{displayHeader}</span>
           </div>
         )}
         {isExpanded && (
           <div
             className={cn(
-              'border-l border-slate-800 pl-3.5',
-              level === 0 ? 'mt-1 space-y-1' : 'ml-2 mt-1 space-y-1'
+              'space-y-1',
+              level === 0 ? '' : 'ml-2 mt-1 border-l border-slate-800/80 pl-2.5'
             )}
           >
             {fields.length === 0 && searchQuery ? (
-              <div className='py-3 text-xs text-slate-500'>
+              <div className='py-2 text-xs text-slate-500'>
                 No fields match &ldquo;{searchQuery}&rdquo;
               </div>
             ) : (
@@ -285,7 +264,9 @@ const ProtoValue = ({
                 (f) => typeof f === 'object' && f !== null && 'type' in f
               ) &&
               fields.map((field: DecodedField, idx: number) => {
+                const isLeaf = !isMessageOrRepeated(field);
                 const isHighlighted =
+                  isLeaf &&
                   highlightedRange &&
                   field.byteRange &&
                   field.byteRange[0] === highlightedRange[0] &&
@@ -295,29 +276,12 @@ const ProtoValue = ({
                   field.fieldName &&
                   field.fieldName !== String(field.fieldNumber);
 
-                return (
-                  <div
-                    key={idx}
-                    onMouseEnter={() =>
-                      field.byteRange && onHoverRange?.(field.byteRange)
-                    }
-                    onMouseLeave={() => onHoverRange?.(null)}
-                    className={cn(
-                      'group rounded-md px-2 py-1 transition-colors',
-                      isHighlighted
-                        ? 'bg-sky-500/15 ring-1 ring-sky-500/40'
-                        : 'hover:bg-slate-900/80'
-                    )}
-                  >
-                    <div className='flex flex-wrap items-start gap-2'>
+                if (!isLeaf) {
+                  return (
+                    <div key={idx} className='flex items-start gap-1.5 py-0.5'>
                       {field.fieldNumber !== undefined && (
-                        <span className='mt-0.5 font-mono text-xs font-semibold text-slate-400'>
+                        <span className='mt-0.5 font-semibold text-slate-400'>
                           {field.fieldNumber}:
-                        </span>
-                      )}
-                      {hasSchemaName && !isMessageOrRepeated(field) && (
-                        <span className='py-0.2 mt-0.5 rounded bg-slate-800/90 px-1.5 font-mono text-xs font-medium text-slate-200'>
-                          {field.fieldName}
                         </span>
                       )}
                       <ProtoValue
@@ -335,6 +299,44 @@ const ProtoValue = ({
                         onHoverRange={onHoverRange}
                       />
                     </div>
+                  );
+                }
+
+                return (
+                  <div
+                    key={idx}
+                    onMouseEnter={() => onHoverRange?.(field.byteRange ?? null)}
+                    className={cn(
+                      'flex cursor-pointer flex-wrap items-center gap-1.5 rounded px-1.5 py-0.5',
+                      isHighlighted
+                        ? 'bg-slate-800 ring-1 ring-sky-400/70'
+                        : 'hover:bg-slate-800/50'
+                    )}
+                  >
+                    {field.fieldNumber !== undefined && (
+                      <span className='text-slate-400'>
+                        {field.fieldNumber}:
+                      </span>
+                    )}
+                    {hasSchemaName && (
+                      <span className='rounded bg-slate-800 px-1 font-semibold text-slate-100'>
+                        {field.fieldName}
+                      </span>
+                    )}
+                    <ProtoValue
+                      data={field}
+                      level={level + 1}
+                      fieldName={
+                        field.fieldName ||
+                        field.message ||
+                        String(field.fieldNumber) ||
+                        'field'
+                      }
+                      searchQuery={searchQuery}
+                      expandSignal={expandSignal}
+                      highlightedRange={highlightedRange}
+                      onHoverRange={onHoverRange}
+                    />
                   </div>
                 );
               })
@@ -355,127 +357,40 @@ const ProtoValue = ({
           : 'false'
         : (data.value?.toString?.() ?? String(data.value));
 
-  // Secondary interpretations worth showing inline
-  const extraInterpretations: Array<{ label: string; val: string }> = [];
+  // Primary alternative wire interpretation (keep at most 1 concise badge so rows stay clean)
+  let altInterp = '';
   if (data.interpretations) {
     if (
       data.type === 'varint' &&
       data.interpretations.sint64 &&
       data.interpretations.sint64 !== String(data.value)
     ) {
-      extraInterpretations.push({
-        label: 'sint',
-        val: data.interpretations.sint64,
-      });
-    }
-    if (
-      data.type === 'varint' &&
-      data.interpretations.timestamp &&
-      !extraInterpretations.some((e) => e.label === 'time')
-    ) {
-      extraInterpretations.push({
-        label: 'time',
-        val: data.interpretations.timestamp,
-      });
-    }
-    if (data.type === 'fixed32' && data.interpretations.float) {
-      extraInterpretations.push({
-        label: 'float',
-        val: data.interpretations.float,
-      });
-      if (
-        data.interpretations.sfixed32 &&
-        data.interpretations.sfixed32 !== String(data.value)
-      ) {
-        extraInterpretations.push({
-          label: 'sfixed32',
-          val: data.interpretations.sfixed32,
-        });
-      }
-    }
-    if (data.type === 'fixed64' && data.interpretations.double) {
-      extraInterpretations.push({
-        label: 'double',
-        val: data.interpretations.double,
-      });
-    }
-    if (data.interpretations.packed_varint) {
-      extraInterpretations.push({
-        label: 'packed',
-        val: data.interpretations.packed_varint,
-      });
+      altInterp = `sint: ${data.interpretations.sint64}`;
+    } else if (data.type === 'fixed32' && data.interpretations.float) {
+      altInterp = `float: ${data.interpretations.float}`;
+    } else if (data.type === 'fixed64' && data.interpretations.double) {
+      altInterp = `double: ${data.interpretations.double}`;
     }
   }
 
   return (
-    <div className='flex flex-wrap items-center gap-2 font-mono text-xs'>
-      <span
-        className={cn('break-all font-medium', {
-          'text-sky-400': data.type === 'string',
-          'text-emerald-400': data.type === 'bool',
-          'text-amber-400':
-            data.type === 'int32' ||
-            data.type === 'int64' ||
-            data.type === 'uint32' ||
-            data.type === 'uint64' ||
-            data.type === 'sint32' ||
-            data.type === 'sint64' ||
-            data.type === 'varint',
-          'text-cyan-300': data.type === 'timestamp',
-          'text-rose-400': data.type === 'bytes',
-          'text-teal-400':
-            data.type === 'float' ||
-            data.type === 'double' ||
-            data.type === 'fixed32' ||
-            data.type === 'fixed64',
-          'text-orange-400': data.type === 'enum',
-        })}
-      >
-        {formattedVal}
-      </span>
-
-      <span className='rounded border border-slate-800 bg-slate-900 px-1.5 py-0.5 text-[10px] text-slate-400'>
-        ({data.type})
-      </span>
-
-      {extraInterpretations.map((interp) => (
-        <span
-          key={interp.label}
-          className='rounded border border-slate-800/80 bg-slate-900/60 px-1.5 py-0.5 text-[10px] text-slate-400'
-          title={`Alternative wire interpretation as ${interp.label}`}
-        >
-          <span className='text-slate-500'>{interp.label}:</span>{' '}
-          <span className='text-slate-300'>{interp.val}</span>
+    <>
+      <span className='break-all text-sky-400'>{formattedVal}</span>
+      <span className='text-slate-500'>({data.type})</span>
+      {altInterp && (
+        <span className='rounded bg-slate-800/80 px-1 text-slate-400'>
+          {altInterp}
         </span>
-      ))}
-
+      )}
       {data.byteRange && (
-        <span className='text-[10px] text-slate-500'>
+        <span className='ml-auto text-slate-500'>
           [{data.byteRange[0]}–{data.byteRange[1]}]
         </span>
       )}
-
-      <button
-        type='button'
-        onClick={(e) => {
-          e.stopPropagation();
-          handleCopy(String(data.value));
-        }}
-        className='opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100'
-        title='Copy value'
-        aria-label='Copy field value'
-      >
-        {copied ? (
-          <Check className='h-3 w-3 text-emerald-400' />
-        ) : (
-          <Copy className='h-3 w-3 text-slate-500 hover:text-slate-300' />
-        )}
-      </button>
-    </div>
+    </>
   );
 };
 
-// Helper function to check if a field is a message or repeated type
 function isMessageOrRepeated(field: DecodedField): boolean {
   return field.type === 'message' || field.type.startsWith('repeated_');
 }
